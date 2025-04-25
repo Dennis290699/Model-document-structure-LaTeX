@@ -1,0 +1,83 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish]{babel}
+\usepackage{hyperref}
+\usepackage{geometry}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{listings}
+\usepackage{longtable}
+\usepackage{float}
+
+% Configuración de márgenes
+\geometry{top=2.5cm, bottom=2.5cm, left=3cm, right=3cm}
+
+% Configuración de encabezados y pie de página
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\textit{Titulo del proyecto}}
+\fancyhead[R]{\thepage}
+\fancyfoot[C]{\textit{Nombre de la catedra}}
+
+% Formato de títulos
+\titleformat{\section}{\large\bfseries}{\thesection.}{0.5em}{}
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection.}{0.5em}{}
+
+% Configuración del índice
+\usepackage{tocloft}
+\renewcommand{\cftsecfont}{\bfseries}
+\renewcommand{\cftsubsecfont}{\itshape}
+\renewcommand{\cfttoctitlefont}{\Large\bfseries}
+
+% Configuración de listings
+\usepackage{xcolor}
+
+\lstset{
+    inputencoding=utf8,
+    extendedchars=true,
+    literate={├}{{\textbar}}1
+             {─}{{\textendash}}1
+             {│}{{\textbar}}1
+             {└}{{\textbar}}1,
+    basicstyle=\ttfamily\footnotesize, % Fuente monoespaciada y tamaño pequeño
+    keywordstyle=\bfseries\color{blue}, % Palabras clave en negrita y azul
+    commentstyle=\itshape\color{green!50!black}, % Comentarios en cursiva y verde oscuro
+    stringstyle=\color{red}, % Cadenas en rojo
+    numberstyle=\tiny\color{gray}, % Números de línea en gris y tamaño pequeño
+    backgroundcolor=\color{gray!10}, % Fondo gris claro
+    frame=shadowbox, % Marco sombreado
+    rulesepcolor=\color{gray!20}, % Color del borde interno del marco
+    breaklines=true, % Permitir líneas largas divididas
+    numbers=left, % Numeración de líneas a la izquierda
+    captionpos=b, % Posición del título del código (abajo)
+    showspaces=false, % No mostrar espacios como símbolos
+    showstringspaces=false, % No mostrar espacios en cadenas
+    tabsize=4, % Tamaño del tabulador
+    morekeywords={self, with, as}, % Agregar más palabras clave si es necesario
+}
+
+\begin{document}
+
+% Portada
+\input{pages/portada}
+
+% Abstract
+\include{pages/resumen}
+
+% Índice
+\tableofcontents
+\newpage
+
+% Secciones del documento
+\input{pages/introduccion}
+
+
+
+\input{pages/conclusiones}
+\input{pages/bibliografia}
+\input{pages/anexos}
+
+\end{document}
