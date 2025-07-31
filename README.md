@@ -1,23 +1,21 @@
-# 📄 Plantilla Base de Documento en LaTeX
+# ProgAdv-III-FinalGroupWork 📋💻
 
-Este repositorio contiene una **estructura base modular en LaTeX**, pensada para facilitar la creación de documentos académicos o técnicos en español. Está diseñada para ser fácilmente modificable y extensible según las necesidades del proyecto.
+Este repositorio contiene un documento técnico en LaTeX que desarrolla el tema de **Programación Funcional Reactiva en Java**, para el curso de Programación Avanzada III. El documento forma parte de un trabajo académico en la **Universidad Central del Ecuador**, dentro de la cátedra de **Programación Avanzada III**.
 
-## 🧱 Características principales
+## 📌 Estructura del documento
 
-- Configuración completa de:
-  - Márgenes y formato de página (`geometry`)
-  - Encabezados y pies de página (`fancyhdr`)
-  - Índice con estilo personalizado (`tocloft`)
-  - Títulos jerarquizados (`titlesec`)
-  - Estilo para código fuente (`listings`)
-- Soporte para idioma español y codificación UTF-8
-- Estructura por módulos (`\input` / `\include`)
-- Compatible con Overleaf, TeX Live, MikTeX, etc.
+- Portada profesional con logotipo institucional
+- Resumen (Abstract)
+- Introducción teórica
+- Desarrollo del tema: Kanban y su aplicación
+- Conclusiones
+- Bibliografía y anexos
+- Estilo personalizado con `fancyhdr`, `listings`, `graphicx`, y más
 
-## 🗂 Estructura del repositorio
+## 📂 Estructura del proyecto
 
 ```
-Model-document-structure-LaTeX/
+progAdv-III-FinalGroupWork/
 ├── pages/
 │   ├── portada.tex
 │   ├── resumen.tex
@@ -26,19 +24,22 @@ Model-document-structure-LaTeX/
 │   ├── bibliografia.tex
 │   └── anexos.tex
 ├── assets/
-│   └── icons/ (para logotipos u otras imágenes)
+│   └── icons/logo-UCE.png
 ├── main.tex
 ```
 
-## 🚀 Cómo usar
+## 🚀 Clonar solo esta rama
 
-1. Clona el repositorio:
+Para clonar **solo la rama `progAdv-III-FinalGroupWork`**, ejecuta este comando en tu terminal:
 
 ```bash
-git clone https://github.com/Dennis290699/Model-document-structure-LaTeX.git
+git clone --branch progAdv-III-FinalGroupWork --single-branch https://github.com/Dennis290699/Model-document-structure-LaTeX.git
 ```
 
-2. Abre y edita los archivos dentro del directorio `pages/` para construir tu documento.
-3. Compila `main.tex` con tu herramienta LaTeX preferida.
+Esto descargará exclusivamente esa rama, sin traer el historial completo de otras ramas.
 
-> Esta plantilla está diseñada para ser **ligera, ordenada y profesional**, lista para adaptarse a cualquier tipo de informe, artículo o trabajo universitario.
+## 🛠 Requisitos
+
+- Compilador LaTeX (TeX Live, MiKTeX, Overleaf, etc.)
+- Editor recomendado: VS Code + extensión LaTeX Workshop
+
