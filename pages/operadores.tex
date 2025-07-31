@@ -1,0 +1,171 @@
+\section{Operadores en Programación Reactiva Funcional}
+
+Los \textbf{operadores} en programación reactiva funcional constituyen el núcleo de la transformación, combinación, filtrado y manipulación de los flujos de datos asincrónicos. Estos operadores permiten definir \emph{qué} hacer con los datos emitidos por un \texttt{Publisher} (como \texttt{Flux} o \texttt{Mono}) sin preocuparse por \emph{cuándo} serán emitidos, facilitando así un enfoque declarativo y funcional para el tratamiento de datos.
+
+\subsection{Clasificación General de Operadores}
+
+En Project Reactor, los operadores se clasifican generalmente en las siguientes categorías:
+
+\begin{itemize}
+    \item \textbf{Operadores de Transformación}: Modifican los elementos emitidos.
+    \item \textbf{Operadores de Filtrado}: Permiten eliminar ciertos elementos del flujo.
+    \item \textbf{Operadores de Combinación}: Fusionan múltiples flujos.
+    \item \textbf{Operadores de Creación}: Permiten construir flujos desde distintas fuentes.
+    \item \textbf{Operadores de Manejo de Errores}: Controlan comportamientos ante fallos.
+    \item \textbf{Operadores de Control de Tiempo y Concurrencia}: Gestionan intervalos, demoras y ejecución paralela.
+    \item \textbf{Operadores de Terminal}: Desencadenan la suscripción y consumo de los datos.
+\end{itemize}
+
+\subsection{Operadores de Transformación}
+
+Transforman el contenido de los flujos. Algunos ejemplos comunes:
+
+\begin{itemize}
+    \item \texttt{map(Function<T, R>)}: Aplica una función a cada elemento.
+    \item \texttt{flatMap(Function<T, Publisher<R>>)}: Descompone elementos en nuevos flujos y los aplana.
+    \item \texttt{concatMap}: Similar a \texttt{flatMap}, pero mantiene el orden de emisión.
+\end{itemize}
+
+\textbf{Ejemplo}:
+
+\begin{lstlisting}[language=Java]
+Flux<String> nombres = Flux.just("Ana", "Luis", "Carlos");
+Flux<String> enMayusculas = nombres.map(String::toUpperCase);
+\end{lstlisting}
+
+\subsection{Operadores de Filtrado}
+
+Filtran los elementos de un flujo según una condición:
+
+\begin{itemize}
+    \item \texttt{filter(Predicate<T>)}: Conserva solo los elementos que cumplen con una condición.
+    \item \texttt{take(n)}: Emite solo los primeros \texttt{n} elementos.
+    \item \texttt{distinct()}: Elimina duplicados.
+    \item \texttt{skip(n)}: Omite los primeros \texttt{n} elementos.
+\end{itemize}
+
+\textbf{Ejemplo}:
+
+\begin{lstlisting}[language=Java]
+Flux<Integer> numeros = Flux.range(1, 10);
+Flux<Integer> pares = numeros.filter(n -> n % 2 == 0);
+\end{lstlisting}
+
+\subsection{Operadores de Combinación}
+
+Fusionan múltiples flujos en uno solo:
+
+\begin{itemize}
+    \item \texttt{mergeWith(Publisher<T>)}: Combina elementos de forma intercalada.
+    \item \texttt{concatWith(Publisher<T>)}: Une flujos de manera secuencial.
+    \item \texttt{zip(Publisher, BiFunction)}: Combina elementos emparejados de dos flujos.
+\end{itemize}
+
+\textbf{Ejemplo}:
+
+\begin{lstlisting}[language=Java]
+Flux<String> letras = Flux.just("A", "B", "C");
+Flux<Integer> numeros = Flux.just(1, 2, 3);
+Flux<String> combinados = Flux.zip(letras, numeros, (letra, num) -> letra + num);
+\end{lstlisting}
+
+\subsection{Operadores de Creación}
+
+Permiten construir un \texttt{Flux} o \texttt{Mono} desde diversas fuentes:
+
+\begin{itemize}
+    \item \texttt{just(T...)}: Crea un flujo a partir de valores literales.
+    \item \texttt{fromIterable(Iterable<T>)}: A partir de una colección.
+    \item \texttt{range(int start, int count)}: Genera una secuencia de enteros.
+    \item \texttt{generate() / create()}: Generación programática.
+\end{itemize}
+
+\subsection{Operadores de Manejo de Errores}
+
+Permiten reaccionar ante errores sin detener el flujo global:
+
+\begin{itemize}
+    \item \texttt{onErrorResume(Function)}: Define un flujo alternativo en caso de error.
+    \item \texttt{onErrorReturn(T fallback)}: Emite un valor por defecto si ocurre error.
+    \item \texttt{retry(n)}: Reintenta un flujo un número determinado de veces.
+\end{itemize}
+
+\textbf{Ejemplo}:
+
+\begin{lstlisting}[language=Java]
+Flux<Integer> datos = Flux.just(10, 0)
+    .map(n -> 100 / n)
+    .onErrorReturn(-1); // En caso de división por cero
+\end{lstlisting}
+
+\subsection{Operadores de Tiempo y Concurrencia}
+
+Son fundamentales en flujos asincrónicos y reactivos:
+
+\begin{itemize}
+    \item \texttt{delayElements(Duration)}: Introduce demoras entre emisiones.
+    \item \texttt{interval(Duration)}: Emite secuencias periódicas.
+    \item \texttt{subscribeOn(Scheduler)}: Ejecuta en un hilo específico.
+    \item \texttt{publishOn(Scheduler)}: Cambia el hilo de ejecución.
+\end{itemize}
+
+\subsection{Operadores Terminales}
+
+Son aquellos que activan el flujo y realizan acciones finales:
+
+\begin{itemize}
+    \item \texttt{subscribe()}: Inicia la suscripción al flujo.
+    \item \texttt{block()}: Espera de forma bloqueante el resultado (no recomendado en entornos reactivos puros).
+    \item \texttt{collectList()}: Agrupa todos los elementos emitidos en una lista.
+\end{itemize}
+
+\subsection{Composición de Operadores}
+
+Uno de los aspectos más potentes de los operadores en programación reactiva es su capacidad de composición fluida. Al encadenar operadores, se puede construir un pipeline declarativo que define cómo deben transformarse los datos a medida que fluyen, sin efectos colaterales y respetando la inmutabilidad.
+
+\textbf{Ejemplo compuesto}:
+
+\begin{lstlisting}[language=Java]
+Flux<String> flujo = Flux.just("uno", "dos", "tres", "cuatro")
+    .filter(p -> p.length() > 3)
+    .map(String::toUpperCase)
+    .delayElements(Duration.ofMillis(500));
+\end{lstlisting}
+
+Los operadores en programación reactiva funcional son herramientas fundamentales que permiten transformar flujos de datos de manera declarativa, expresiva y eficiente. Su correcta aplicación, combinada con principios funcionales como la inmutabilidad y las funciones puras, permite construir aplicaciones robustas, escalables y altamente concurrentes. A través del dominio de estos operadores, el programador puede modelar procesos asincrónicos complejos de manera más intuitiva y elegante, sin recurrir al control manual de hilos ni a estructuras de sincronización tradicionales.
+
+\subsection{Ejercicio Práctico – Uso de Operadores en Programación Reactiva Funcional}
+
+El presente ejercicio, contenido en el proyecto \texttt{operadores-prog-reactiv}, tiene como propósito demostrar el uso de \textbf{operadores funcionales en flujos reactivos} utilizando la librería \texttt{Project Reactor}. A través de una simulación de datos generados por sensores de temperatura, se procesan eventos aplicando operadores como \texttt{filter}, \texttt{map}, \texttt{distinctUntilChanged} y \texttt{take}, respetando los principios de programación funcional de orden superior, con una arquitectura modular y escalable.
+
+\subsubsection*{Estructura del proyecto}
+
+La solución está organizada bajo el paquete base \texttt{com.programacion}, siguiendo una estructura coherente con principios de diseño limpio:
+
+\begin{itemize}
+  \item \texttt{model.SensorData.java}: Define el modelo de datos que representa una lectura de sensor.
+  \item \texttt{service.SensorService.java}: Simula un flujo reactivo (\texttt{Flux<SensorData>}) de lecturas de sensores.
+  \item \texttt{util.LoggerFluxSubscriber.java}: Implementa un suscriptor personalizado extendido de \texttt{BaseSubscriber<T>} para gestionar el consumo del flujo.
+  \item \texttt{App.java}: Clase principal que configura la secuencia de operadores y ejecuta el flujo de datos.
+\end{itemize}
+
+\subsubsection*{Explicación técnica}
+
+La clase \texttt{App.java} instancia el servicio \texttt{SensorService}, el cual proporciona un flujo continuo de objetos \texttt{SensorData} simulados con valores aleatorios de temperatura en Fahrenheit.
+
+Sobre este flujo se aplican los siguientes operadores funcionales:
+
+\begin{itemize}
+  \item \texttt{filter()}: Descarta lecturas fuera del rango aceptable (menores a 70°F o mayores a 100°F), filtrando sólo datos relevantes.
+  
+  \item \texttt{distinctUntilChanged()}: Evita procesar lecturas consecutivas con valores repetidos, optimizando así el flujo de eventos.
+  
+  \item \texttt{map()}: Transforma las lecturas de Fahrenheit a Celsius aplicando una función pura que retorna un nuevo objeto.
+  
+  \item \texttt{take()}: Limita el procesamiento a las primeras cinco lecturas válidas del flujo, actuando como operador de corte.
+\end{itemize}
+
+Además, se podría emplear el operador \texttt{doOnNext()} para registrar eventos de forma controlada, sin interferir con el flujo principal ni romper el enfoque funcional.
+
+La suscripción final al flujo se realiza mediante la clase \texttt{LoggerFluxSubscriber}, garantizando que las responsabilidades de transformación, filtrado y visualización estén completamente desacopladas.
+
