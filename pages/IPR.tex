@@ -1,0 +1,177 @@
+\section{Introducción a la Programación Reactiva}
+
+\subsection{Fundamentos de la programación reactiva}
+
+La \textit{programación reactiva} es un paradigma centrado en el modelado de flujos de datos y eventos asíncronos a lo largo del tiempo. Su objetivo es facilitar la construcción de sistemas altamente responsivos, resilientes y escalables, capaces de reaccionar de manera eficiente ante cambios en el entorno.
+
+A diferencia del enfoque imperativo tradicional, donde el flujo de ejecución es secuencial, la programación reactiva se apoya en un modelo \textit{push-based}, en el cual los datos se "empujan" hacia los consumidores en lugar de ser solicitados. Esto elimina técnicas ineficientes como el \textit{polling} y promueve arquitecturas orientadas a eventos.
+
+Uno de sus fundamentos teóricos es el patrón de diseño \textit{Observer}, que establece una relación entre un sujeto (observable) y sus observadores (suscriptores), permitiendo notificaciones automáticas ante cambios de estado. Esta abstracción se extiende en forma de \textit{streams}, que representan secuencias de eventos procesadas de manera asíncrona y no bloqueante.
+
+\vspace{0.5em}
+\noindent Un ejemplo básico en Java simula este modelo:
+
+\begin{lstlisting}[language=Java, caption={Simulación básica de flujo y suscripción}, label={lst:basic_stream}]
+@FunctionalInterface
+interface Subscriber<T> {
+    void onNext(T value);
+}
+
+class SimpleObservable<T> {
+    private final T value;
+
+    public SimpleObservable(T value) {
+        this.value = value;
+    }
+
+    public void subscribe(Subscriber<T> subscriber) {
+        subscriber.onNext(value);
+    }
+}
+
+// Uso
+SimpleObservable<String> stream = new SimpleObservable<>("Hola Reactivo");
+stream.subscribe(System.out::println); // Salida: Hola Reactivo
+\end{lstlisting}
+
+Este ejemplo refleja la esencia del modelo: separación entre emisión de datos y su consumo.
+
+\subsection{Relación con la programación funcional}
+
+La programación reactiva se complementa naturalmente con la \textit{programación funcional}, compartiendo principios como la inmutabilidad, funciones puras y composición declarativa.
+
+Los flujos de datos se tratan como secuencias inmutables. Cada operación —\texttt{map}, \texttt{filter}, \texttt{flatMap}— genera un nuevo flujo sin modificar el original, asegurando transparencia referencial, lo que facilita la concurrencia segura y la predicción de resultados.
+
+\vspace{0.5em}
+\noindent Por ejemplo:
+
+\begin{lstlisting}[language=Java, caption={Transformación funcional con Stream API}, label={lst:functional_transform}]
+import java.util.List;
+import java.util.stream.Collectors;
+
+List<String> palabras = List.of("reactivo", "funcional", "java", "programacion");
+
+List<String> resultado = palabras.stream()
+    .filter(s -> s.length() > 7)
+    .map(String::toUpperCase)
+    .sorted()
+    .collect(Collectors.toList());
+
+System.out.println(resultado); // [FUNCIONAL, PROGRAMACION, REACTIVO]
+\end{lstlisting}
+
+Este estilo permite expresar transformaciones complejas de forma declarativa y compacta.
+
+\subsection{Implementación en Java: evolución y herramientas}
+
+Java ha evolucionado para incorporar elementos que habilitan programación funcional y reactiva, especialmente desde la versión 8. Las tres innovaciones clave son:
+
+\begin{itemize}
+    \item \textbf{Expresiones lambda:} definen funciones anónimas de forma concisa, como \texttt{(x) -> x * 2}.
+    \item \textbf{Interfaces funcionales:} como \texttt{Function<T,R>}, \texttt{Predicate<T>}, \texttt{Consumer<T>} y \texttt{Supplier<T>}.
+    \item \textbf{Stream API:} permite el procesamiento secuencial o paralelo de datos de forma declarativa.
+\end{itemize}
+
+Además, han surgido librerías específicas como:
+
+\begin{itemize}
+    \item \textbf{RxJava:} implementación de ReactiveX con tipos como \texttt{Observable}, \texttt{Single}, \texttt{Flowable}.
+    \item \textbf{Project Reactor:} base de Spring WebFlux, con tipos \texttt{Mono<T>} y \texttt{Flux<T>}.
+    \item \textbf{Akka Streams:} orientada al modelo de actores, funcional tanto en Scala como en Java.
+\end{itemize}
+
+\subsection{Características clave de los flujos reactivos}
+
+Los flujos reactivos se caracterizan por:
+
+\begin{itemize}
+    \item \textbf{Asincronía:} procesamiento solo cuando los datos están disponibles.
+    \item \textbf{No bloqueo:} los hilos no se detienen durante el procesamiento.
+    \item \textbf{Composición funcional:} operaciones encadenables como \texttt{map}, \texttt{merge}, \texttt{zip}.
+    \item \textbf{Backpressure:} el consumidor regula la velocidad del productor.
+    \item \textbf{Manejo declarativo de errores:} mediante operadores como \texttt{onErrorResume} o \texttt{retry}.
+\end{itemize}
+
+\vspace{0.5em}
+\noindent Ejemplo con manejo de errores:
+
+\begin{lstlisting}[language=Java, caption={Manejo de errores en flujo reactivo}, label={lst:error_handling}]
+import reactor.core.publisher.Flux;
+
+Flux.just(1, 2, 0, 4)
+    .map(x -> 10 / x)
+    .onErrorResume(ex -> {
+        System.err.println("Error: " + ex.getMessage());
+        return Flux.just(0); // Valor de recuperación
+    })
+    .subscribe(System.out::println); // Salida: 10, 5, 0, 2
+\end{lstlisting}
+
+\subsection{Ventajas del enfoque funcional reactivo}
+
+Entre las principales ventajas se encuentran:
+
+\begin{itemize}
+    \item \textbf{Estilo declarativo:} mayor legibilidad y menor complejidad.
+    \item \textbf{Reducción de efectos colaterales:} gracias al uso de funciones puras.
+    \item \textbf{Escalabilidad:} ideal para entornos concurrentes.
+    \item \textbf{Alta capacidad de respuesta:} útil en aplicaciones sensibles al tiempo.
+    \item \textbf{Reutilización y modularidad:} permite la composición de operadores.
+\end{itemize}
+
+\subsection{Aplicaciones prácticas}
+
+La programación reactiva tiene aplicación en múltiples dominios:
+
+\begin{itemize}
+    \item Interfaces gráficas (GUI) con eventos como clics o entradas.
+    \item Monitoreo en tiempo real (dashboards, IoT, sensores).
+    \item Microservicios y APIs no bloqueantes.
+    \item Procesamiento continuo de datos (Kafka, Flink, Spark).
+    \item Aplicaciones móviles y embebidas con RxJava.
+\end{itemize}
+
+\subsection{Ejercicios y código complementario}
+
+Para reforzar los conceptos, se incluyen ejercicios prácticos centrados en flujos, expresiones lambda y operadores funcionales. Los ejemplos están disponibles en el archivo \texttt{introduccion-prog-reactiva.rar}, bajo el \textit{Anexo A}, e incluyen:
+
+\begin{itemize}
+    \item Código fuente organizado por módulos.
+    \item Instrucciones de compilación y ejecución.
+    \item Pruebas unitarias y configuración de entorno (Maven/Gradle).
+\end{itemize}
+
+Se recomienda utilizar un IDE moderno (IntelliJ IDEA, Eclipse) para facilitar el desarrollo.
+
+\subsection{Planteamiento del ejercicio}
+
+El presente ejercicio tiene como objetivo fundamental demostrar los principios básicos de la programación reactiva funcional mediante un ejemplo sencillo y didáctico en el lenguaje Java. Para ello, se simula un flujo de datos representado por objetos del tipo \texttt{Persona}, cada uno con atributos de nombre y edad.
+
+El ejercicio consiste en obtener un conjunto inicial de datos estático, procesarlos mediante un flujo reactivo usando la librería \textit{Project Reactor} y aplicar una serie de transformaciones funcionales: en primer lugar, se filtran los objetos que representan personas mayores o iguales a 18 años; a continuación, se transforman a una representación textual formateada para su posterior visualización.
+
+Para mantener los principios de modularidad, escalabilidad y limpieza del código, la solución está organizada en paquetes específicos que separan el modelo de datos, la lógica de negocio (servicios), las utilidades de formateo, y la clase principal que orquesta la ejecución. Se utilizan interfaces para abstraer los servicios y facilitar futuras extensiones o cambios en la implementación.
+
+\subsection{Descripción de la estructura y componentes}
+
+El proyecto sigue una estructura clara y organizada que permite una fácil navegación y mantenimiento:
+
+\begin{itemize}
+    \item \textbf{Paquete \texttt{model}}: Contiene la clase \texttt{Persona}, definida como un \texttt{record} para aprovechar la inmutabilidad y simplicidad.
+    \item \textbf{Paquete \texttt{service}}: Define la interfaz \texttt{PersonaService} y su implementación concreta \texttt{PersonaServiceImpl}, donde se generan y filtran los datos reactivos mediante \texttt{Flux}.
+    \item \textbf{Paquete \texttt{util}}: Incluye la clase \texttt{Formateador}, responsable de transformar objetos \texttt{Persona} en cadenas de texto, usando programación reactiva con \texttt{Mono}.
+    \item \textbf{Clase principal \texttt{App}}: Orquesta la ejecución, conectando las fuentes de datos, aplicando las transformaciones, y suscribiéndose al flujo reactivo para la presentación de resultados.
+\end{itemize}
+
+La solución hace uso intensivo de la API de \textit{Project Reactor}, aprovechando sus operadores funcionales como \texttt{filter} y \texttt{flatMap} para construir un pipeline reactivo que respeta los principios funcionales de inmutabilidad, composición y ausencia de efectos secundarios dentro de los métodos funcionales.
+
+\subsection{Justificación como programación reactiva funcional}
+
+Este ejercicio ejemplifica la programación reactiva funcional al combinar ambos paradigmas de la siguiente forma:
+
+\begin{itemize}
+    \item \textbf{Reactiva:} El procesamiento de los datos se realiza mediante flujos asíncronos y no bloqueantes (\texttt{Flux} y \texttt{Mono}), lo que permite reaccionar a la llegada de nuevos elementos de forma dinámica. La ejecución ocurre sólo cuando existe una suscripción activa, siguiendo el patrón \textit{push-based}.
+    \item \textbf{Funcional:} Se emplean funciones puras y operadores de orden superior (\texttt{filter}, \texttt{flatMap}) para transformar los datos, manteniendo la inmutabilidad y evitando efectos colaterales dentro de las funciones utilizadas en el flujo. Además, la composición funcional facilita la construcción de pipelines claros y declarativos.
+\end{itemize}
+
+Este enfoque permite construir sistemas que son altamente escalables, responsivos y fáciles de mantener, aptos para entornos concurrentes y de alta demanda, características propias de la programación reactiva funcional.
+
