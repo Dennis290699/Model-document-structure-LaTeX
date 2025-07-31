@@ -1,0 +1,106 @@
+\section{Observables en la Programación Reactiva Funcional}
+
+\subsection{Introducción teórica}
+
+Los \textit{Observables} constituyen uno de los pilares fundamentales en la programación reactiva. En términos generales, un \textbf{Observable} es una abstracción que representa una secuencia de datos o eventos que pueden ser emitidos de manera sincrónica o asincrónica. El patrón que sigue un \textit{Observable} es el de \textit{publicador-suscriptor} (publisher-subscriber), donde uno o varios observadores pueden suscribirse a una fuente de datos que emite valores en el tiempo.
+
+En el contexto de Java, existen distintas implementaciones de \textit{Observables}, siendo una de las más utilizadas la provista por la librería \textbf{RxJava}. Aunque en secciones anteriores se ha hecho uso de \texttt{Flux} y \texttt{Mono} de \textit{Project Reactor}, en esta sección se explora el uso de \texttt{Observable} desde la perspectiva de \textit{RxJava}, para comprender su funcionamiento y manipulación funcional.
+
+\subsection{Características de los Observables}
+
+Los \textit{Observables} presentan las siguientes características clave:
+
+\begin{itemize}
+    \item \textbf{Lazy evaluation (evaluación diferida):} El Observable no emite ningún valor hasta que un observador se suscribe.
+    \item \textbf{Encadenamiento de operadores:} Se pueden aplicar múltiples operaciones funcionales como \texttt{map}, \texttt{filter}, \texttt{flatMap}, entre otros, para transformar el flujo de datos.
+    \item \textbf{Soporte para asincronía:} Permite gestionar flujos asincrónicos sin necesidad de manejar directamente hilos.
+    \item \textbf{Multicast o unicast:} Dependiendo del tipo, un Observable puede emitir los mismos datos a múltiples observadores (multicast) o emitir datos independientes a cada uno (unicast).
+\end{itemize}
+
+\subsection{Declaración y uso de un Observable}
+
+A continuación, se presenta un ejemplo simple de cómo declarar y utilizar un Observable en RxJava:
+
+\begin{lstlisting}[language=Java, caption={Declaración de un Observable en RxJava}]
+Observable<String> observable = Observable.just("A", "B", "C");
+
+observable
+    .map(String::toLowerCase)
+    .filter(letter -> !"b".equals(letter))
+    .subscribe(
+        item -> System.out.println("Item: " + item),
+        error -> System.err.println("Error: " + error),
+        () -> System.out.println("Completado")
+    );
+\end{lstlisting}
+
+Este ejemplo crea un flujo con tres elementos, aplica transformaciones funcionales y luego se suscribe para consumir los elementos. El método \texttt{subscribe} acepta tres funciones: una para manejar los ítems emitidos, otra para manejar errores, y una tercera para cuando el flujo se completa.
+
+\subsection{Control del flujo con operadores funcionales}
+
+RxJava proporciona una variedad de operadores funcionales que permiten manipular el flujo de datos de manera declarativa. Algunos de los más relevantes incluyen:
+
+\begin{itemize}
+    \item \texttt{map(Function<T, R>)}: Transforma cada elemento del flujo.
+    \item \texttt{filter(Predicate<T>)}: Filtra los elementos que no cumplen una condición.
+    \item \texttt{flatMap(Function<T, Observable<R>>)}: Descompone cada ítem en un nuevo Observable y lo aplana en un solo flujo.
+    \item \texttt{reduce(BiFunction<T, T, T>)}: Acumula los valores emitidos en uno solo.
+\end{itemize}
+
+\begin{lstlisting}[language=Java, caption={Uso de operadores funcionales}]
+Observable<Integer> numbers = Observable.range(1, 5);
+
+numbers
+    .filter(n -> n % 2 == 0)
+    .map(n -> n * n)
+    .subscribe(System.out::println);
+\end{lstlisting}
+
+Este fragmento filtra los números pares del 1 al 5, luego los eleva al cuadrado y los imprime.
+
+\subsection{Planteamiento del ejercicio práctico}
+
+Con el objetivo de aplicar de manera práctica los conceptos fundamentales de los \textit{Observables}, se propone el desarrollo de un ejercicio que simule un flujo de datos representando eventos de temperatura emitidos por sensores.
+
+El proyecto implementado, titulado \texttt{observables-prog-reactiv}, tiene como propósito demostrar principios de la programación reactiva funcional utilizando el lenguaje Java y la biblioteca \texttt{Project Reactor}. La organización del código sigue una arquitectura modular y escalable, dividida en paquetes con responsabilidades específicas.
+
+\subsection{Estructura de Carpetas}
+
+\begin{itemize}
+    \item \textbf{\texttt{src/main/java/com/programacion}}: Contiene todo el código fuente principal del proyecto.
+    \item \textbf{\texttt{model}}: Define las entidades del dominio. En este caso, se encuentra la clase \texttt{Producto}, que representa un artículo con nombre y precio.
+    \item \textbf{\texttt{service}}: Define la lógica de negocio a través de la interfaz \texttt{ProductoService} y su implementación en \texttt{ProductoServiceImpl}, la cual genera un flujo reactivo de productos (\texttt{Flux<Producto>}).
+    \item \textbf{\texttt{util}}: Contiene utilidades para gestionar suscripciones de flujos. \texttt{LoggerFluxSubscriber} se encarga de imprimir los valores emitidos por los flujos de forma controlada.
+    \item \textbf{\texttt{App}}: Clase principal del proyecto. Su función es ejecutar los diferentes flujos, aplicar operaciones reactivas como \texttt{filter}, \texttt{map}, \texttt{sort} y \texttt{reduce}, y mostrar los resultados en consola.
+\end{itemize}
+
+\subsection{Descripción de Clases}
+
+\begin{itemize}
+    \item \textbf{\texttt{Producto}}: Define un objeto con dos atributos: \texttt{nombre} y \texttt{precio}. Incluye un método sobrescrito \texttt{toString()} que permite representar el contenido del objeto de forma legible al imprimirlo.
+    \item \textbf{\texttt{ProductoService}}: Interfaz que define el contrato para obtener una lista de productos como flujo reactivo.
+    \item \textbf{\texttt{ProductoServiceImpl}}: Implementa la interfaz anterior, generando un conjunto de productos precargados y expuestos mediante \texttt{Flux}.
+    \item \textbf{\texttt{LoggerFluxSubscriber}}: Clase utilitaria que contiene métodos estáticos para suscribirse a flujos y mostrar los elementos recibidos. Utiliza una función \texttt{Consumer} personalizada.
+    \item \textbf{\texttt{App}}: Clase ejecutable que orquesta el flujo de datos. Se ejecutan diferentes ejemplos de operaciones reactivas como:
+    \begin{itemize}
+        \item Visualizar todos los productos.
+        \item Filtrar productos con precio mayor a \texttt{\$100}.
+        \item Transformar un flujo de \texttt{Producto} a \texttt{String} (nombres).
+        \item Ordenar productos por precio.
+        \item Obtener el producto más caro usando \texttt{reduce}.
+    \end{itemize}
+\end{itemize}
+
+\subsection{Ejecución y Compilación}
+
+El proyecto está estructurado con \texttt{Gradle} y organizado para ser compatible con entornos como \texttt{IntelliJ IDEA}. Las clases compiladas se almacenan en el directorio \texttt{build/classes}, mientras que los archivos fuente permanecen en \texttt{src/main/java}.
+
+\subsection{Observaciones}
+
+Durante la ejecución del proyecto, se presentan resultados en consola gracias a la suscripción explícita a los flujos mediante el método \texttt{subscribe()}. El resultado de cada flujo es mostrado utilizando el método \texttt{toString()} de la clase \texttt{Producto}, permitiendo una representación clara y significativa.
+
+\begin{center}
+\texttt{Producto: Monitor - \$200.0}
+\end{center}
+
+Esta arquitectura modular facilita la extensión del sistema, como la incorporación de nuevos filtros, agregados y transformaciones reactivas sin comprometer la estructura del código existente.
