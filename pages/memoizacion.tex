@@ -1,0 +1,181 @@
+\section{Memoización en Programación Reactiva Funcional}
+
+La integración de la memoización en la \textbf{programación reactiva funcional} permite optimizar flujos de datos (\texttt{Flux} o \texttt{Mono}) reutilizando resultados previamente computados. Esta práctica es coherente con los principios funcionales, especialmente cuando se trabaja con flujos inmutables y funciones puras. En este enfoque, la memoización se convierte en un mecanismo valioso para reducir la latencia y evitar el reprocesamiento innecesario de elementos del flujo.
+
+\subsection{Concepto Aplicado al Contexto Reactivo}
+
+En programación reactiva, el flujo de datos se modela como una secuencia asincrónica que puede contener cero o más elementos. Cuando dichos elementos dependen de cálculos costosos o de consultas externas (e.g., servicios REST, base de datos, transformaciones complejas), la memoización permite interceptar y almacenar los resultados de las operaciones sobre los datos sin alterar el flujo ni romper el paradigma funcional.
+
+\subsection{Ejemplo de Memoización Reactiva con \texttt{Flux}}
+
+\begin{lstlisting}[language=Java]
+public class ProductoService {
+    private final Map<String, Producto> cache = new ConcurrentHashMap<>();
+
+    public Function<Producto, Producto> memoizeProducto() {
+        return producto -> 
+            cache.computeIfAbsent(producto.getNombre(), key -> {
+                System.out.println("Procesando: " + producto.getNombre());
+                return producto; 
+            });
+    }
+
+    public Flux<Producto> procesarProductosMemoizados(Flux<Producto> productos) {
+        Function<Producto, Producto> memoized = memoizeProducto();
+        return productos.map(memoized);
+    }
+}
+\end{lstlisting}
+
+En este ejemplo, se evita reprocesar objetos de tipo \texttt{Producto} que ya han sido transformados, lo cual es especialmente útil cuando se trabaja con listas que pueden contener elementos repetidos o cuando los datos provienen de múltiples fuentes.
+
+\subsection{Memoización con Claves Derivadas}
+
+Cuando el objeto completo no puede ser usado como clave (por no implementar adecuadamente \texttt{equals}/\texttt{hashCode}), es posible utilizar una clave derivada.
+
+\begin{lstlisting}[language=Java]
+Function<Producto, Producto> memoizePorPrecio() {
+    return producto ->
+        cache.computeIfAbsent(String.valueOf(producto.getPrecio()), k -> transformar(producto));
+}
+
+private Producto transformar(Producto producto) {
+    System.out.println("Transformando producto...");
+    return new Producto(producto.getNombre().toUpperCase(), producto.getPrecio());
+}
+\end{lstlisting}
+
+\subsection{Memoización con Pares o Combinaciones de Parámetros}
+
+En flujos donde se combinan múltiples atributos o se aplican filtros, se puede utilizar una clave compuesta:
+
+\begin{lstlisting}[language=Java]
+Function<Producto, Producto> memoizePorNombreYPrecio() {
+    return producto -> {
+        String key = producto.getNombre() + "-" + producto.getPrecio();
+        return cache.computeIfAbsent(key, k -> transformar(producto));
+    };
+}
+\end{lstlisting}
+
+\subsection{Ventajas en Contextos Reactivos}
+
+\begin{itemize}
+    \item \textbf{No bloqueante}: La memoización no introduce esperas ni afecta la naturaleza asincrónica del flujo.
+    \item \textbf{Determinismo funcional}: Reutiliza resultados sin modificar el flujo ni generar efectos secundarios.
+    \item \textbf{Escalabilidad}: Al reducir cálculos redundantes, disminuye la carga de CPU en flujos concurrentes.
+    \item \textbf{Eficiencia en caché local}: Ideal para sistemas sin necesidad de una solución distribuida.
+\end{itemize}
+
+\subsection{Consideraciones y Buenas Prácticas}
+
+\begin{itemize}
+    \item Usar estructuras \texttt{ConcurrentHashMap} para entornos multihilo.
+    \item Validar si la transformación es pura antes de aplicar memoización.
+    \item Limitar la memoria usada mediante técnicas de caché delimitado o expirable (e.g., Guava Cache).
+    \item No abusar de la memoización cuando los datos cambian con frecuencia.
+\end{itemize}
+
+\subsection{Comparación con Operadores de Cacheo en Reactor}
+
+Reactor proporciona operadores como \texttt{cache()} para guardar resultados en memoria, sin embargo, su comportamiento es diferente a una memoización manual:
+
+\begin{itemize}
+    \item \texttt{memoización}: Se define por clave lógica derivada de los datos.
+    \item \texttt{cache()}: Reutiliza los elementos emitidos tras la primera suscripción, no discrimina por contenido.
+\end{itemize}
+
+\begin{lstlisting}[language=Java]
+Flux<String> flujo = Flux.fromIterable(List.of("A", "B", "A"))
+                         .map(memoizeString())
+                         .cache(); 
+\end{lstlisting}
+
+La combinación de memoización y programación reactiva funcional permite un tratamiento eficiente de flujos de datos repetitivos, favoreciendo el rendimiento y la claridad en sistemas que aplican principios funcionales en entornos asíncronos. Esta estrategia es ideal en contextos donde se requiere garantizar consistencia sin sacrificar velocidad.
+
+\subsection{Ejercicio Práctico: Aplicación de Memoización con Funciones Matemáticas}
+
+Para reforzar el concepto de memoización en un contexto funcional y reactivo, se ha desarrollado un ejercicio práctico implementado en Java. Este ejercicio consiste en una serie de funciones matemáticas computacionalmente intensivas (como el cálculo del factorial, la sucesión de Fibonacci y la verificación de números primos), acompañadas de mecanismos de memoización reutilizables para optimizar su ejecución.
+El proyecto implementado, titulado \texttt{memoizacion-prog-react}, tiene como propósito demostrar principios de la programación reactiva funcional utilizando el lenguaje Java y la biblioteca \texttt{Project Reactor}. La organización del código sigue una arquitectura modular y escalable, dividida en paquetes con responsabilidades específicas.
+
+\subsubsection{Estructura del Proyecto}
+
+El proyecto está organizado de forma modular, con una jerarquía de paquetes y clases que facilita su mantenimiento y escalabilidad. A continuación se muestra su estructura:
+
+\begin{verbatim}
+memoizacion-prog-react
+├── src
+│   └── main
+│       └── java
+│           └── com.programacion
+│               ├── App.java
+│               ├── factorial.java
+│               ├── fibonaci.java
+│               ├── functionsMemoizer.java
+│               ├── GenericMemoizacion.java
+│               ├── numeroPrimo.java
+\end{verbatim}
+
+\subsubsection{Propósito del Proyecto}
+
+El objetivo principal es demostrar cómo aplicar técnicas de memoización en problemas clásicos de la computación, para evidenciar la mejora en rendimiento cuando se reutilizan resultados previamente calculados. El diseño sigue principios de programación funcional: funciones puras, separación de responsabilidades y uso de estructuras inmutables cuando es posible.
+
+\subsubsection{Descripción de Clases Principales}
+
+\begin{itemize}
+    \item \textbf{App.java}: Clase principal del proyecto. Desde aquí se ejecutan las pruebas de las funciones memoizadas y se compara su rendimiento frente a versiones no memoizadas.
+
+    \item \textbf{factorial.java}: Contiene la implementación recursiva del cálculo de factorial de un número, así como su versión memoizada usando funciones lambda.
+
+    \item \textbf{fibonaci.java}: Define la función para obtener el $n$-ésimo número de la serie de Fibonacci. Se incluye una implementación naive y otra optimizada con memoización.
+
+    \item \textbf{numeroPrimo.java}: Permite verificar si un número entero es primo. Esta clase también se beneficia de memoización para evitar verificar los mismos valores repetidamente.
+
+    \item \textbf{functionsMemoizer.java}: Implementa un memoizador genérico utilizando un \texttt{Map}, lo que permite almacenar resultados de funciones de una sola variable.
+
+    \item \textbf{GenericMemoizacion.java}: Variante del memoizador genérico que puede aplicarse a distintos tipos de funciones y claves, respetando el paradigma funcional.
+\end{itemize}
+
+\subsubsection{Fragmento de Ejemplo: Memoización de Fibonacci}
+
+\begin{lstlisting}[language=Java]
+public class fibonaci {
+    private static final Map<Integer, Integer> cache = new HashMap<>();
+
+    public static int fib(int n) {
+        return cache.computeIfAbsent(n, k -> {
+            if (k <= 1) return k;
+            return fib(k - 1) + fib(k - 2);
+        });
+    }
+}
+\end{lstlisting}
+
+En este ejemplo, cada llamada a \texttt{fib(n)} consulta el \texttt{Map} \texttt{cache} para verificar si el resultado ya fue computado. Si no lo ha sido, lo calcula y lo almacena. Esto reduce drásticamente el número de llamadas recursivas en la serie de Fibonacci.
+
+\subsubsection{Uso del Memoizador Genérico}
+
+La clase \texttt{functionsMemoizer} permite aplicar memoización a cualquier función de forma reutilizable:
+
+\begin{lstlisting}[language=Java]
+public class functionsMemoizer {
+    public static <T, R> Function<T, R> memoize(Function<T, R> function) {
+        Map<T, R> cache = new ConcurrentHashMap<>();
+        return input -> cache.computeIfAbsent(input, function);
+    }
+}
+\end{lstlisting}
+
+Esto permite definir funciones puras y luego convertirlas en funciones memoizadas con una sola línea:
+
+\begin{lstlisting}[language=Java]
+Function<Integer, Integer> factorialMemo = functionsMemoizer.memoize(factorial::calcular);
+\end{lstlisting}
+
+\subsubsection{Integración con Programación Reactiva}
+
+Aunque el ejercicio se centra en funciones matemáticas, el memoizador puede integrarse fácilmente en flujos \texttt{Flux} o \texttt{Mono}, permitiendo aplicar memoización dentro de operadores como \texttt{map()} o \texttt{flatMap()}, como se mostró en la sección anterior.
+
+\subsubsection{Conclusión del Ejercicio}
+
+Este ejercicio práctico evidencia cómo la memoización mejora la eficiencia de funciones costosas sin perder la claridad ni romper la inmutabilidad funcional. Al utilizar estructuras de caché internas y funciones puras, se promueve un diseño limpio, testable y adecuado para sistemas reactivos de mayor escala.
