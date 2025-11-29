@@ -1,0 +1,49 @@
+\section{Discusi\'on y An\'alisis}
+
+\subsection{Interpretaci\'on de resultados}
+Los resultados obtenidos reflejan un comportamiento estable del ecosistema Hadoop a pesar de ejecutarse en un entorno contenerizado. La correcta disponibilidad de los nodos, la replicaci\'on de datos en HDFS y la ejecuci\'on satisfactoria de las tareas MapReduce evidencian que la arquitectura desplegada cumple con las funcionalidades esenciales del modelo distribuido.
+
+La organizaci\'on de los datos y la respuesta de HDFS muestran que la configuraci\'on aplicada fue adecuada, permitiendo validar los principios fundamentales del sistema de archivos distribuido.
+
+\subsection{Significado de los tiempos y logs}
+El an\'alisis de los tiempos de ejecuci\'on revel\'o que los trabajos siguieron un flujo secuencial y predecible: asignaci\'on de tareas, ejecuci\'on del mapeo, agrupamiento, reducci\'on y generaci\'on de archivos finales.
+
+Los logs mostraron:
+
+\begin{itemize}
+    \item Comunicaci\'on continua y estable entre nodos.
+    \item Asignaci\'on equitativa de tareas en el cl\'uster.
+    \item Ausencia de excepciones cr\'iticas o timeouts.
+\end{itemize}
+
+Estos elementos, interpretados en conjunto, confirman que los subsistemas fundamentales del ecosistema Hadoop operaron de forma adecuada.
+
+\subsection{Evaluaci\'on del funcionamiento del cl\'uster Docker + Hadoop}
+El cl\'uster construido mediante Docker demostr\'o ser una alternativa eficiente para la implementaci\'on de entornos distribuidos con fines acad\'emicos. Sus ventajas incluyen:
+
+\begin{itemize}
+    \item R\'apida replicaci\'on del entorno.
+    \item Aislamiento entre servicios.
+    \item Facilidad en la configuraci\'on y despliegue.
+\end{itemize}
+
+No obstante, la contenedorizaci\'on introduce una capa adicional de virtualizaci\'on que puede limitar el rendimiento en comparaci\'on con un entorno f\'isico. Aun as\'i, para los fines de prueba y aprendizaje, el rendimiento observado fue plenamente satisfactorio.
+
+\subsection{Ventajas y limitaciones del enfoque}
+\textbf{Ventajas:}
+
+\begin{itemize}
+    \item Entorno r\'apido de desplegar y replicar.
+    \item Escalabilidad controlada mediante configuraci\'on de contenedores.
+    \item Bajo costo computacional para pruebas iniciales.
+\end{itemize}
+
+\textbf{Limitaciones:}
+
+\begin{itemize}
+    \item Rendimiento moderado debido a la capa intermedia de virtualizaci\'on.
+    \item Dependencia del host para asignaci\'on de memoria y CPU.
+    \item Posibles incompatibilidades entre versiones de Hadoop y Docker seg\'un la configuraci\'on.
+\end{itemize}
+
+En resumen, el enfoque basado en Docker resulta altamente adecuado para escenarios de aprendizaje y validaci\'on conceptual, manteniendo un equilibrio razonable entre simplicidad, portabilidad y funcionalidad.

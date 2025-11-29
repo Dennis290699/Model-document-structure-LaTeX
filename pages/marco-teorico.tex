@@ -1,0 +1,133 @@
+\section{Marco Teórico}
+
+El presente apartado desarrolla los fundamentos conceptuales necesarios para comprender el funcionamiento de Apache Hadoop y su implementación dentro de un entorno virtualizado mediante contenedores Docker. Los conceptos expuestos incluyen Big Data, computación distribuida, los componentes principales de la arquitectura Hadoop, el funcionamiento de HDFS, YARN y MapReduce, así como los fundamentos de Docker y su relación con la virtualización moderna. Finalmente, se describe el ecosistema Hadoop y el flujo general de procesamiento distribuido.
+
+\subsection{Big Data}
+
+El término \textit{Big Data} se refiere al conjunto de herramientas, técnicas y metodologías orientadas al tratamiento de grandes volúmenes de datos que exceden la capacidad de los sistemas tradicionales de almacenamiento y procesamiento. La caracterización clásica del Big Data se fundamenta en las denominadas \textit{Tres V}:
+
+\begin{itemize}
+    \item \textbf{Volumen:} Cantidad masiva de datos generados por diversas fuentes como sensores, redes sociales, registros transaccionales, sistemas empresariales, dispositivos móviles, entre otros.
+    \item \textbf{Velocidad:} Ritmo acelerado de generación, transmisión y procesamiento de datos en tiempo real o casi real.
+    \item \textbf{Variedad:} Diversidad de formatos de datos, que pueden ser estructurados (tablas), semiestructurados (JSON, XML) o no estructurados (imágenes, textos, videos, datos de sensores).
+\end{itemize}
+
+A estas características se suman otras propiedades como la variabilidad, la veracidad y el valor, las cuales han permitido una comprensión más amplia del fenómeno. La necesidad de procesar esta información ha impulsado el desarrollo de arquitecturas distribuidas y herramientas especializadas, entre las cuales Hadoop se destaca como una solución robusta y ampliamente adoptada.
+
+\subsection{Computación Distribuida}
+
+La computación distribuida es un paradigma de procesamiento en el cual múltiples sistemas independientes cooperan para resolver un problema en conjunto. Estos sistemas, denominados nodos, se comunican a través de una red y distribuyen la carga de trabajo para mejorar la eficiencia, tolerancia a fallos y escalabilidad.
+
+Entre las principales características de la computación distribuida se encuentran:
+
+\begin{itemize}
+    \item \textbf{Escalabilidad horizontal:} Capacidad de añadir nodos adicionales para incrementar el rendimiento del sistema.
+    \item \textbf{Tolerancia a fallos:} Capacidad del sistema para continuar operando aun cuando algunos nodos fallen.
+    \item \textbf{Procesamiento paralelo:} División de tareas en subtareas que pueden ejecutarse simultáneamente.
+    \item \textbf{Transparencia:} Los usuarios perciben el sistema como una unidad coherente, sin exponerse a la complejidad interna.
+\end{itemize}
+
+Hadoop se fundamenta completamente en este paradigma, permitiendo el procesamiento de grandes conjuntos de datos mediante la división de tareas y la ejecución paralela en clusters de bajo costo.
+
+\subsection{Arquitectura de Hadoop}
+
+Apache Hadoop es un marco de código abierto diseñado para el almacenamiento y procesamiento distribuido de grandes volúmenes de datos mediante clusters de computadores. Su arquitectura está compuesta por tres elementos principales:
+
+\begin{itemize}
+    \item \textbf{HDFS (Hadoop Distributed File System):} Sistema de archivos distribuido diseñado para almacenar grandes cantidades de información en bloques replicados entre múltiples nodos.
+    \item \textbf{YARN (Yet Another Resource Negotiator):} Módulo que gestiona los recursos del cluster y coordina la ejecución de tareas.
+    \item \textbf{MapReduce:} Modelo de programación que permite procesar datos de manera distribuida mediante las fases de \textit{map} y \textit{reduce}.
+\end{itemize}
+
+Cada uno de estos componentes se analiza de manera individual en las subsecciones siguientes.
+
+\subsection{HDFS: Hadoop Distributed File System}
+
+HDFS es un sistema de archivos distribuido diseñado para ser altamente tolerante a fallos y capaz de almacenar archivos de gran tamaño. Sus características fundamentales son:
+
+\begin{itemize}
+    \item \textbf{División en bloques:} Los archivos se dividen en bloques (por defecto, de 128 MB) que se almacenan en distintos nodos.
+    \item \textbf{Replicación:} Cada bloque se replica en varios nodos para garantizar disponibilidad incluso ante fallos de hardware.
+    \item \textbf{Jerarquía maestro-esclavo:} El \textit{namenode} administra la estructura del sistema, mientras que los \textit{datanode} almacenan los bloques.
+    \item \textbf{Optimización para lectura secuencial:} HDFS prioriza grandes operaciones de lectura sobre accesos aleatorios.
+\end{itemize}
+
+La separación entre control e información permite que HDFS sea escalable y eficiente para sistemas con miles de nodos.
+
+\subsection{YARN: Gestión de Recursos}
+
+YARN es la capa de gestión de recursos y planificación de tareas dentro del ecosistema Hadoop. Está compuesto principalmente por:
+
+\begin{itemize}
+    \item \textbf{ResourceManager:} Encargado de distribuir recursos entre aplicaciones.
+    \item \textbf{NodeManager:} Supervisa los recursos y procesos dentro de cada nodo del cluster.
+    \item \textbf{ApplicationMaster:} Coordina la ejecución de una aplicación específica.
+\end{itemize}
+
+YARN separa la planificación de tareas del modelo MapReduce, permitiendo que Hadoop ejecute múltiples tipos de procesos, no solo MapReduce, y mejorando su capacidad de escalabilidad.
+
+\subsection{MapReduce: Modelo de Programación Distribuida}
+
+MapReduce es un modelo de programación utilizado para procesar grandes conjuntos de datos mediante dos fases principales:
+
+\begin{itemize}
+    \item \textbf{Map:} Divide los datos en partes independientes y genera pares clave-valor.
+    \item \textbf{Reduce:} Combina los resultados generados por la fase \textit{map} y produce la salida final.
+\end{itemize}
+
+Este modelo permite que cada nodo procese una parte de los datos de manera paralela, aprovechando la arquitectura distribuida del cluster. Hadoop incorpora un conjunto de herramientas MapReduce por defecto, como el algoritmo de conteo de palabras utilizado en este laboratorio.
+
+\subsection{Arquitectura de Docker}
+
+Docker es una plataforma de virtualización ligera basada en contenedores que permite empaquetar aplicaciones con todas sus dependencias para asegurar una ejecución consistente en diferentes entornos. Su arquitectura se compone de:
+
+\begin{itemize}
+    \item \textbf{Motor Docker (Docker Engine):} Responsable de crear, ejecutar y gestionar contenedores.
+    \item \textbf{Imágenes (Images):} Plantillas inmutables utilizadas para construir contenedores.
+    \item \textbf{Contenedores (Containers):} Instancias ejecutables de una imagen.
+    \item \textbf{Dockerfile:} Archivo que describe el proceso de construcción de una imagen.
+\end{itemize}
+
+Docker es ideal para replicar entornos complejos como Hadoop, ya que garantiza consistencia y facilidad de despliegue.
+
+\subsection{Contenedores vs. Máquinas Virtuales}
+
+Aunque comparten el objetivo de aislar aplicaciones, los contenedores y las máquinas virtuales presentan diferencias significativas:
+
+\begin{itemize}
+    \item \textbf{Consumo de recursos:} Los contenedores utilizan menos recursos, ya que comparten el kernel del sistema anfitrión.
+    \item \textbf{Peso del entorno:} Las máquinas virtuales requieren un sistema operativo completo; los contenedores no.
+    \item \textbf{Velocidad de despliegue:} Los contenedores se inician en segundos; las máquinas virtuales pueden tardar minutos.
+    \item \textbf{Portabilidad:} Los contenedores son altamente portables gracias a su encapsulación.
+\end{itemize}
+
+Estas características convierten a Docker en una herramienta eficiente para levantar clusters experimentales como el de Hadoop utilizado en este laboratorio.
+
+\subsection{Ecosistema Hadoop}
+
+Además de sus componentes centrales, Hadoop cuenta con un amplio ecosistema de herramientas diseñadas para el procesamiento, almacenamiento y análisis de datos. Entre las más conocidas destacan:
+
+\begin{itemize}
+    \item \textbf{Hive:} Sistema de consulta basado en SQL para análisis de datos sobre HDFS.
+    \item \textbf{HBase:} Base de datos NoSQL distribuida de alta escalabilidad.
+    \item \textbf{Pig:} Lenguaje de alto nivel para procesamiento de datos.
+    \item \textbf{Sqoop y Flume:} Herramientas para ingestión de datos.
+    \item \textbf{Spark:} Motor de procesamiento rápido en memoria.
+\end{itemize}
+
+Si bien estas herramientas no forman parte del presente laboratorio, son relevantes para comprender el alcance y la versatilidad de Hadoop como plataforma de Big Data.
+
+\subsection{Flujo de Procesamiento Distribuido en Hadoop}
+
+El flujo general de procesamiento en Hadoop sigue las siguientes etapas:
+
+\begin{enumerate}
+    \item El usuario carga datos en HDFS.
+    \item El sistema divide los datos en bloques y los distribuye entre los nodos.
+    \item YARN asigna recursos y coordina la ejecución del trabajo.
+    \item La fase \textit{map} procesa los bloques de forma paralela.
+    \item La fase \textit{reduce} combina los resultados parciales.
+    \item El resultado final se almacena nuevamente en HDFS.
+\end{enumerate}
+
+Este flujo garantiza eficiencia, tolerancia a fallos y escalabilidad, permitiendo procesar grandes volúmenes de información con hardware económico y distribuido.
