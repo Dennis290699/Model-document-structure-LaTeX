@@ -1,0 +1,86 @@
+\section{Introducción}
+
+El crecimiento exponencial de los datos generados por organizaciones, sistemas informáticos y usuarios ha impulsado la necesidad de adoptar herramientas capaces de procesar, almacenar y analizar grandes volúmenes de información de manera eficiente. En este contexto, el ecosistema de tecnologías orientadas al Big Data se ha consolidado como un componente esencial para la toma de decisiones basada en datos, la optimización de procesos y la innovación tecnológica en múltiples sectores.
+
+El presente laboratorio se orienta al estudio y comprensión práctica de Apache Hadoop, una de las plataformas de código abierto más utilizadas a nivel mundial para el procesamiento distribuido de datos. Para facilitar su despliegue y asegurar la reproducibilidad del entorno experimental, se ha empleado Docker como tecnología de contenedores, permitiendo la creación de entornos aislados, portables y consistentes. Este informe documenta detalladamente el procedimiento realizado para instalar, configurar y ejecutar un clúster Hadoop, así como las pruebas iniciales de operación del sistema de archivos distribuido y la ejecución de un trabajo MapReduce.
+
+A continuación, se presentan los fundamentos conceptuales y metodológicos que guían el desarrollo de este laboratorio.
+
+\subsection{Contexto del Big Data}
+
+El término \textit{Big Data} hace referencia al conjunto de técnicas, tecnologías y metodologías destinadas al procesamiento y análisis de grandes volúmenes de datos caracterizados por sus \textit{tres V}: volumen, velocidad y variedad. Estas propiedades superan la capacidad de los sistemas tradicionales para almacenar, gestionar y extraer información útil de manera eficiente.
+
+En la actualidad, organizaciones de distintos sectores generan cantidades masivas de datos provenientes de sensores, redes sociales, transacciones financieras, sistemas de monitoreo, dispositivos inteligentes y múltiples fuentes digitales. Para aprovechar este valor informativo, es indispensable contar con arquitecturas distribuidas que permitan manejar estos flujos masivos de datos con tolerancia a fallos, escalabilidad y alto rendimiento.
+
+Por este motivo, el estudio de herramientas como Hadoop resulta indispensable para comprender cómo las infraestructuras modernas procesan información a gran escala.
+
+\subsection{Importancia de Hadoop}
+
+Apache Hadoop es un marco de trabajo diseñado para ejecutar aplicaciones distribuidas de procesamiento masivo mediante clusters de computadores. Su arquitectura se fundamenta en dos componentes esenciales: el sistema de archivos distribuido HDFS y el modelo de programación MapReduce, complementados por YARN, responsable de la administración de recursos.
+
+Hadoop destaca por:
+
+\begin{itemize}
+    \item Su capacidad para almacenar y procesar grandes conjuntos de datos de manera paralela.
+    \item Su alto nivel de tolerancia a fallos gracias a la replicación de bloques en múltiples nodos.
+    \item Su escalabilidad horizontal, que permite ampliar el cluster mediante la incorporación de nuevos nodos.
+    \item Su amplia adopción en la industria como herramienta clave para el análisis de Big Data.
+\end{itemize}
+
+En el contexto académico, Hadoop permite comprender los principios fundamentales del procesamiento distribuido, convirtiéndose en un componente esencial para el estudio de infraestructuras de datos modernas.
+
+\subsection{Relevancia del uso de Docker}
+
+La utilización de Docker en este laboratorio proporciona múltiples ventajas en el despliegue del entorno Hadoop:
+
+\begin{itemize}
+    \item Facilita la creación de entornos aislados, minimizando conflictos de dependencias.
+    \item Permite reproducir la configuración del sistema de manera estandarizada.
+    \item Agiliza la administración del cluster al encapsular cada nodo en un contenedor independiente.
+    \item Reduce el tiempo de instalación comparado con entornos físicos o máquinas virtuales.
+\end{itemize}
+
+Gracias a estas características, Docker se convierte en una herramienta ideal para labores de experimentación, pruebas y enseñanza relacionadas con el procesamiento distribuido y sistemas de archivos distribuidos.
+
+\subsection{Objetivos del laboratorio}
+
+\subsubsection*{Objetivo general}
+
+Implementar y evaluar un entorno funcional de Apache Hadoop utilizando contenedores Docker con el fin de comprender su arquitectura, operación y capacidades de procesamiento distribuido.
+
+\subsubsection*{Objetivos específicos}
+
+\begin{itemize}
+    \item Construir una imagen Docker personalizada para desplegar un cluster Hadoop.
+    \item Configurar y levantar los servicios principales de Hadoop (HDFS y YARN).
+    \item Ejecutar comandos de interacción con HDFS para validar su funcionamiento.
+    \item Generar un archivo de gran tamaño (mayor a 1~GB) y cargarlo en el sistema de archivos distribuido.
+    \item Ejecutar el trabajo MapReduce de conteo de palabras y analizar sus resultados.
+    \item Documentar el proceso completo mediante capturas de pantalla y explicaciones técnicas.
+\end{itemize}
+
+\subsection{Alcances}
+
+El presente laboratorio se centra exclusivamente en:
+
+\begin{itemize}
+    \item La instalación, configuración e inicialización de un cluster Hadoop de prueba.
+    \item La ejecución del sistema de archivos distribuido HDFS.
+    \item La validación del funcionamiento básico mediante comandos fundamentales.
+    \item La ejecución de un trabajo MapReduce ya disponible en las herramientas estándar de Hadoop.
+    \item El análisis de funcionamiento del entorno desplegado con Docker.
+\end{itemize}
+
+\subsection{Limitaciones}
+
+El trabajo no aborda:
+
+\begin{itemize}
+    \item La configuración avanzada de seguridad o autenticación en Hadoop.
+    \item El ajuste de rendimiento (\textit{tuning}) para clusters de producción.
+    \item La integración de herramientas adicionales del ecosistema Hadoop (Hive, Spark, HBase, Pig, etc.).
+    \item La modificación del algoritmo MapReduce o la creación de nuevos trabajos personalizados.
+    \item La simulación de clusters de alta disponibilidad (HA) o topologías complejas.
+\end{itemize}
+
+Estas limitaciones permiten enfocar el laboratorio en la comprensión de los fundamentos esenciales para la administración y operación básica de un cluster Hadoop.

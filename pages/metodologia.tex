@@ -1,0 +1,277 @@
+\section{Metodología del Laboratorio}
+
+La presente sección desarrolla de manera exhaustiva el proceso metodológico implementado para la construcción, despliegue, prueba y validación de un clúster Hadoop ejecutado íntegramente sobre contenedores Docker. La metodología se diseñó bajo un enfoque secuencial, garantizando que cada fase del despliegue fuera verificada antes de continuar con la siguiente. Esto permitió asegurar la reproducibilidad del experimento, el control de los componentes involucrados y la integridad del entorno distribuido.
+
+El conjunto de actividades documentadas constituye un procedimiento sistemático que combina aspectos teóricos de la computación distribuida con prácticas aplicadas de virtualización mediante contenedores, suministro de servicios Hadoop y ejecución de algoritmos MapReduce. Este proceso integra aspectos de despliegue, operación, validación y cierre del entorno, de modo que el laboratorio pudiera ser ejecutado sin ambigüedades y con resultados coherentes.
+
+\subsection{Visión general del procedimiento}
+
+El laboratorio se ejecutó siguiendo una secuencia metodológica lógica orientada a la progresiva habilitación del entorno. Esta secuencia incluyó:
+
+\begin{enumerate}
+    \item Construcción de una imagen personalizada de Hadoop.
+    \item Despliegue del clúster mediante Docker Compose.
+    \item Validación del estado operativo de los contenedores.
+    \item Acceso al contenedor NameNode para acciones administrativas.
+    \item Comprobación detallada de servicios internos: HDFS, YARN y MapReduce.
+    \item Pruebas básicas sobre el sistema de archivos distribuido.
+    \item Generación y manipulación de un archivo de gran tamaño.
+    \item Ejecución de un trabajo MapReduce (WordCount).
+    \item Obtención y validación de resultados.
+    \item Apagado controlado del clúster.
+\end{enumerate}
+
+\subsection{Construcción de la imagen Docker}
+
+\subsubsection*{Comando utilizado}
+
+\begin{verbatim}
+docker build -t hadoop-custom:latest .
+\end{verbatim}
+
+La imagen define el sistema operativo, dependencias, variables de entorno y binarios necesarios para Hadoop. Incluye instalación de Java, copia de configuraciones, inicialización de rutas internas y creación de directorios requeridos por HDFS y YARN.
+
+Verificación:
+
+\begin{verbatim}
+docker images | grep hadoop-custom
+\end{verbatim}
+
+\subsection{Arranque del clúster}
+
+\subsubsection*{Comando utilizado}
+
+\begin{verbatim}
+docker compose up -d
+\end{verbatim}
+
+El parámetro \verb|-d| permite la ejecución en segundo plano. Los servicios de Hadoop requieren aproximadamente 2 minutos para inicializarse completamente.
+
+Verificación de contenedores:
+
+\begin{verbatim}
+docker ps
+\end{verbatim}
+
+\subsection{Acceso al contenedor NameNode}
+
+\begin{verbatim}
+docker exec -it namenode bash
+\end{verbatim}
+
+Desde este contenedor se ejecutan operaciones administrativas como inspección del HDFS, ejecución de trabajos MapReduce, revisión de YARN y análisis de logs.
+
+\subsection{Verificación de servicios internos}
+
+\subsubsection*{Procesos activos}
+
+\begin{verbatim}
+jps
+\end{verbatim}
+
+Procesos esperados: \textit{NameNode, DataNode, ResourceManager, NodeManager, JobHistoryServer}.
+
+\subsubsection*{Estado general de HDFS}
+
+\begin{verbatim}
+hdfs dfsadmin -report
+\end{verbatim}
+
+\subsubsection*{Estado de nodos YARN}
+
+\begin{verbatim}
+yarn node -list
+\end{verbatim}
+
+\subsubsection*{Reporte del ResourceManager}
+
+\begin{verbatim}
+yarn resourcemanager -report
+\end{verbatim}
+
+\subsubsection*{Verificación de MapReduce}
+
+\begin{verbatim}
+mapred job -list
+\end{verbatim}
+
+\subsubsection*{Interfaces Web}
+
+\begin{itemize}
+    \item NameNode: \url{http://localhost:9870}
+    \item ResourceManager: \url{http://localhost:8088}
+\end{itemize}
+
+\subsection{Pruebas iniciales de HDFS}
+
+\subsubsection*{Creación de directorios}
+
+\begin{verbatim}
+hdfs dfs -mkdir /input
+\end{verbatim}
+
+\subsubsection*{Subida de archivo de prueba}
+
+\begin{verbatim}
+echo "Hola Hadoop" > test.txt
+hdfs dfs -put test.txt /input
+\end{verbatim}
+
+\subsubsection*{Listado y lectura}
+
+\begin{verbatim}
+hdfs dfs -ls /input
+hdfs dfs -cat /input/test.txt
+\end{verbatim}
+
+\subsection{Generación de archivo grande}
+
+\begin{verbatim}
+for i in {1..100000}; do
+echo "hadoop mapreduce bigdata analytics processing 
+distributed computing framework";
+done > bigfile.txt
+\end{verbatim}
+
+Subida a HDFS:
+
+\begin{verbatim}
+hdfs dfs -mkdir /bigdata
+hdfs dfs -put bigfile.txt /bigdata
+\end{verbatim}
+
+\subsection{Ejecución de MapReduce (WordCount)}
+
+\subsubsection*{Preparación}
+
+\begin{verbatim}
+hdfs dfs -mkdir /wordcount-input
+hdfs dfs -cp /bigdata/bigfile.txt /wordcount-input/
+\end{verbatim}
+
+\subsubsection*{Ejecución del trabajo}
+
+\begin{verbatim}
+hadoop jar $HADOOP_HOME/share/hadoop/mapreduce/ \
+hadoop-mapreduce-examples-*.jar wordcount \
+/wordcount-input /wordcount-output
+\end{verbatim}
+
+\subsection{Obtención de resultados}
+
+\begin{verbatim}
+hdfs dfs -cat /wordcount-output/part-r-00000 | head -20
+\end{verbatim}
+
+\subsection{Apagado del clúster}
+
+Salir del contenedor:
+
+\begin{verbatim}
+exit
+\end{verbatim}
+
+Detener el entorno:
+
+\begin{verbatim}
+docker compose down
+\end{verbatim}
+
+Eliminación de volúmenes (opcional):
+
+\begin{verbatim}
+docker compose down -v
+\end{verbatim}
+
+\subsection{Resolución de problemas comunes}
+
+\begin{itemize}
+    \item Retrasos en YARN: esperar 2--3 minutos después de levantar el clúster.
+    \item Fallas en contenedores: revisar logs con:
+\begin{verbatim}
+docker logs namenode
+\end{verbatim}
+    \item Problemas de memoria: asignar 6--8 GB al host.
+\end{itemize}
+
+\subsection{Tablas de Resumen del Entorno Hadoop}
+
+Con el fin de sintetizar los elementos principales utilizados durante el laboratorio, se presentan a continuación tablas de resumen relacionadas con los comandos esenciales, los procesos críticos del ecosistema Hadoop y los puertos web de administración.
+
+\subsubsection*{Resumen de comandos utilizados}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|p{8.2cm}|p{7cm}|}
+\hline
+\textbf{Comando} & \textbf{Descripción} \\
+\hline
+\verb|docker build -t hadoop-custom:latest .| & Construcción de la imagen personalizada de Hadoop. \\
+\hline
+\verb|docker compose up -d| & Levanta el clúster Hadoop en segundo plano. \\
+\hline
+\verb|docker exec -it namenode bash| & Acceso interactivo al contenedor NameNode. \\
+\hline
+\verb|jps| & Lista procesos Java relacionados con Hadoop. \\
+\hline
+\verb|hdfs dfsadmin -report| & Reporte completo del estado de HDFS. \\
+\hline
+\verb|yarn node -list| & Lista nodos activos administrados por YARN. \\
+\hline
+\verb|hdfs dfs -mkdir /ruta| & Crea un directorio dentro de HDFS. \\
+\hline
+\verb|hdfs dfs -put archivo ruta| & Sube archivos al HDFS. \\
+\hline
+\verb|hadoop jar ... wordcount| & Ejecuta el ejemplo MapReduce WordCount. \\
+\hline
+\verb|docker compose down| & Apaga el clúster Hadoop. \\
+\hline
+\end{tabular}
+\caption{Resumen de comandos principales utilizados en el laboratorio.}
+\end{table}
+
+\subsubsection*{Resumen de procesos internos esperados}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|p{4cm}|p{8cm}|}
+\hline
+\textbf{Proceso} & \textbf{Función dentro del clúster Hadoop} \\
+\hline
+NameNode & Gestiona la estructura del sistema de archivos HDFS y la ubicación de bloques. \\
+\hline
+DataNode & Almacena físicamente los bloques de datos dentro del clúster. \\
+\hline
+ResourceManager & Administra los recursos del clúster y asigna contenedores YARN. \\
+\hline
+NodeManager & Ejecuta contenedores YARN y reporta recursos disponibles. \\
+\hline
+JobHistoryServer & Proporciona historial y métricas de los trabajos MapReduce ejecutados. \\
+\hline
+SecondaryNameNode & Realiza puntos de control (checkpoints) del NameNode. \\
+\hline
+\end{tabular}
+\caption{Procesos fundamentales que deben estar activos en una instalación Hadoop.}
+\end{table}
+
+\subsubsection*{Resumen de puertos web del ecosistema Hadoop}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|p{3cm}|p{3cm}|p{7cm}|}
+\hline
+\textbf{Servicio} & \textbf{Puerto} & \textbf{Descripción} \\
+\hline
+NameNode UI & 9870 & Interfaz web para visualizar el estado del HDFS, bloques y nodos. \\
+\hline
+ResourceManager UI & 8088 & Monitorización de aplicaciones YARN, contenedores y recursos. \\
+\hline
+JobHistoryServer UI & 19888 & Historial completo de trabajos MapReduce ejecutados. \\
+\hline
+NodeManager UI & 8042 & Información sobre el estado del nodo y contenedores asignados. \\
+\hline
+DataNode UI & 9864 & Visualización de bloques almacenados en el DataNode. \\
+\hline
+\end{tabular}
+\caption{Puertos de administración y monitoreo utilizados por los componentes de Hadoop.}
+\end{table}
