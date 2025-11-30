@@ -35,7 +35,7 @@ Model-document-structure-LaTeX/
 1. Clona el repositorio:
 
 ```bash
-git clone https://github.com/Dennis290699/Model-document-structure-LaTeX.git
+git clone --branch Aplicaciones-Criptograficas --single-branch https://github.com/Dennis290699/Model-document-structure-LaTeX.git
 ```
 
 2. Abre y edita los archivos dentro del directorio `pages/` para construir tu documento.
