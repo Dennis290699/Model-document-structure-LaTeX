@@ -11,6 +11,16 @@
 \usepackage{listings}
 \usepackage{longtable}
 \usepackage{float}
+\usepackage{tabularx}
+
+\usepackage{tcolorbox}
+\tcbset{colback=gray!5, colframe=black!60, arc=2mm, boxrule=0.5pt}
+\usepackage{enumitem}
+\usepackage{array}
+
+
+
+
 
 % Configuración de márgenes
 \geometry{top=2.5cm, bottom=2.5cm, left=3cm, right=3cm}
@@ -18,9 +28,10 @@
 % Configuración de encabezados y pie de página
 \pagestyle{fancy}
 \fancyhf{}
-\fancyhead[L]{\textit{Instalación, Configuración y Ejecución de Hadoop usando Docker}}
+\fancyhead[L]{\textit{Aplicaciones Criptográficas - Acceso web seguro (HTTPS)}}
 \fancyhead[R]{\thepage}
-\fancyfoot[C]{\textit{Cátedra - Taller I}}
+\fancyfoot[C]{\textit{Cátedra Criptográfia y seguridad de la información
+}}
 
 % Formato de títulos
 \titleformat{\section}{\large\bfseries}{\thesection.}{0.5em}{}
@@ -73,14 +84,18 @@
 
 % Secciones del documento
 \input{pages/introduccion}
-\input{pages/marco-teorico}
-\input{pages/requerimientos}
-\input{pages/metodologia}
-\input{pages/desarrollo}
-\input{pages/resultados}
-\input{pages/discusion}
+
+\input{pages/definicion_https}
+\input{pages/algoritmos_criptograficos}
+\input{pages/protocolos_criptograficos}
+\input{pages/diseno_funcionamiento}
+\input{pages/escenarios_uso}
+\input{pages/implementacion_practica}
+\input{pages/preguntas}
+
 \input{pages/conclusiones}
-\input{pages/bibliografia}
+\bibliographystyle{IEEEtran}
+\bibliography{bibliografia}
 \input{pages/anexos}
 
 \end{document}
