@@ -1,1 +1,14 @@
-\section{Resumen}
+\section*{Resumen}
+
+El presente informe, desarrollado por el \textbf{Grupo 6}, tiene como objetivo analizar de manera integral la aplicación criptográfica denominada \textbf{Acceso Web Seguro (HTTPS)}, abordando sus fundamentos teóricos, sus mecanismos criptográficos subyacentes y su relevancia en la protección de las comunicaciones en Internet. HTTPS constituye actualmente el estándar predominante para el establecimiento de canales seguros entre clientes y servidores web, sustentado principalmente en el protocolo Transport Layer Security (TLS) y en la Infraestructura de Clave Pública (PKI), elementos esenciales para garantizar autenticidad, confidencialidad e integridad de los datos transmitidos.
+
+El documento inicia con una definición formal de la tecnología y con una descripción detallada de los \textit{algoritmos criptográficos} involucrados, tales como RSA, ECDSA, Diffie–Hellman y su variante de curvas elípticas (ECDHE), así como los esquemas de cifrado simétrico modernos utilizados en las suites criptográficas actuales (AES-GCM, ChaCha20-Poly1305). Posteriormente, se presenta un inventario exhaustivo de los \textit{protocolos criptográficos} que intervienen en el establecimiento del canal seguro, destacándose TLS 1.2 y TLS 1.3, el manejo de certificados X.509, los mecanismos de revocación (OCSP, CRL) y los estándares de seguridad complementarios (HSTS, ALPN).
+
+Asimismo, se incluye un \textbf{diseño esquemático del proceso de establecimiento de sesión}, explicando cada etapa del \textit{handshake TLS}, la validación de certificados y la generación de claves efímeras, elementos que permiten propiedades avanzadas como el \textit{Perfect Forward Secrecy}. También se describen tres escenarios comunes donde HTTPS resulta fundamental: plataformas de comercio electrónico, sistemas de banca en línea y APIs modernas para servicios distribuidos.
+
+El informe integra además una sección de \textbf{preguntas técnicas orientadas al razonamiento criptográfico}, así como una \textbf{implementación práctica} basada en Node.js, que permite demostrar el funcionamiento de HTTPS mediante la configuración de un servidor seguro y la generación de certificados utilizando herramientas criptográficas estándar. Este ejercicio permite a los estudiantes consolidar su comprensión teórica a través de una experiencia aplicada.
+
+Finalmente, el trabajo se apoya en un conjunto de \textbf{referencias científicas en formato IEEE con DOI}, que proveen validez académica al análisis y permiten profundizar en aspectos avanzados del protocolo TLS, la gestión de certificados y la seguridad en la infraestructura web contemporánea.
+
+En suma, este informe constituye un estudio técnico riguroso que articula teoría, práctica y análisis crítico, alineándose con los objetivos formativos de la Cátedra de Criptografía y Seguridad de la Información. Su elaboración fortalece las competencias del estudiante en criptografía aplicada, diseño de sistemas seguros y evaluación de tecnologías destinadas a la protección de la información en entornos digitales.
+
