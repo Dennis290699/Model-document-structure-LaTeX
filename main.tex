@@ -18,9 +18,9 @@
 % Configuración de encabezados y pie de página
 \pagestyle{fancy}
 \fancyhf{}
-\fancyhead[L]{\textit{Titulo del proyecto}}
+\fancyhead[L]{\textit{PROYECTO FINAL G6 - Laboratorio Hacking Ético}}
 \fancyhead[R]{\thepage}
-\fancyfoot[C]{\textit{Nombre de la catedra}}
+\fancyfoot[C]{\textit{Cátedra de Criptografía y Seguridad de la Información}}
 
 % Formato de títulos
 \titleformat{\section}{\large\bfseries}{\thesection.}{0.5em}{}
@@ -64,20 +64,44 @@
 % Portada
 \input{pages/portada}
 
-% Abstract
+% Resumen
 \include{pages/resumen}
 
 % Índice
 \tableofcontents
 \newpage
 
-% Secciones del documento
+% Introducción
 \input{pages/introduccion}
 
+% Entorno y dispositivos
+\input{pages/entorno}
 
+% Routemap
+\input{pages/routemap}
 
+% Reset de equipos
+\input{pages/reset_equipos}
+
+% Configuración del rack
+\input{pages/configuracion_rack}
+
+% Configuración del entorno linux
+\input{pages/preparacion_entorno_linux}
+
+% Ataques
+\input{pages/ataques_puertos}
+\input{pages/ataque_ddos}
+\input{pages/ataque_wifi}
+\input{pages/ataque_payload}
+
+% Conclusiones
 \input{pages/conclusiones}
+
+% Bibliografía
 \input{pages/bibliografia}
+
+% Anexos
 \input{pages/anexos}
 
 \end{document}

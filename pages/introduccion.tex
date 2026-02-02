@@ -1,1 +1,44 @@
 \section{Introducción}
+
+En la actualidad, las redes de datos constituyen un componente fundamental en el funcionamiento de instituciones académicas, empresariales y gubernamentales, permitiendo el intercambio de información, el acceso a servicios digitales y la interconexión de sistemas heterogéneos. Sin embargo, el crecimiento y la complejidad de estas infraestructuras han incrementado de manera significativa la superficie de ataque, exponiéndolas a múltiples amenazas de seguridad que pueden comprometer la confidencialidad, integridad y disponibilidad de la información.
+
+En este contexto, la seguridad de la información se ha convertido en un eje prioritario dentro del diseño y la administración de redes, haciendo indispensable no solo la implementación de mecanismos defensivos, sino también la comprensión práctica de las técnicas utilizadas por posibles atacantes. El estudio controlado de estas técnicas permite identificar vulnerabilidades, evaluar riesgos y proponer medidas de mitigación adecuadas, fortaleciendo así la postura de seguridad de una infraestructura tecnológica.
+
+El presente proyecto, desarrollado por el \textbf{Grupo 6}, se enmarca dentro de esta necesidad, integrando conceptos de redes, administración de dispositivos de interconexión y seguridad ofensiva, con el objetivo de aplicar de manera práctica los conocimientos adquiridos a lo largo de la asignatura de \textit{Criptografía y Seguridad de la Información}.
+
+\subsection{Contexto del proyecto}
+
+La práctica propuesta consiste en el diseño e implementación de una red segmentada que conecta múltiples equipos distribuidos en diferentes redes lógicas, utilizando dispositivos de red como routers, switches y puntos de acceso inalámbricos. Cada segmento de red cumple un rol específico dentro de la topología, permitiendo simular un entorno realista en el que coexisten estaciones de trabajo, servidores y redes inalámbricas.
+
+Para la correcta organización de la red, se emplea un esquema de direccionamiento IP privado bajo el rango \texttt{192.168.X.0/24}, donde el valor \textbf{X} identifica al grupo de trabajo. Este esquema facilita la identificación de cada red y garantiza coherencia en la asignación de direcciones. Asimismo, se implementa segmentación mediante \textbf{VLANs}, lo que permite separar el tráfico de red, mejorar el rendimiento y aumentar el nivel de seguridad al limitar la propagación de posibles ataques.
+
+El uso de herramientas de simulación como \textbf{Cisco Packet Tracer} permite representar de forma gráfica la topología diseñada, validar la conectividad entre dispositivos y verificar el correcto funcionamiento del enrutamiento inter-VLAN antes de su despliegue lógico o físico.
+
+\subsection{Justificación}
+
+La realización de este proyecto se justifica por la necesidad de que los estudiantes desarrollen competencias prácticas en el ámbito de la seguridad informática, comprendiendo tanto los mecanismos de protección como las técnicas de ataque más comunes utilizadas en entornos de red. El análisis ofensivo controlado permite identificar debilidades que, de no ser detectadas oportunamente, podrían ser explotadas en escenarios reales con consecuencias críticas.
+
+Además, el uso de herramientas especializadas incluidas en el entorno \textbf{Kali Linux} proporciona una aproximación realista a las metodologías empleadas en auditorías de seguridad y pruebas de penetración, fomentando una visión ética y responsable del hacking, orientada exclusivamente al aprendizaje y a la mejora continua de la seguridad de los sistemas.
+
+\subsection{Objetivos del proyecto}
+
+\subsubsection{Objetivo general}
+
+Diseñar, implementar y documentar una infraestructura de red segmentada que integre múltiples dispositivos y servicios, así como ejecutar actividades controladas de seguridad ofensiva, con el fin de analizar vulnerabilidades y fortalecer el entendimiento práctico de los principios de la seguridad de la información.
+
+\subsubsection{Objetivos específicos}
+
+\begin{itemize}
+    \item Diseñar una topología de red que conecte equipos ubicados en distintas redes lógicas, utilizando un router y un switch como elementos de interconexión.
+    \item Implementar un esquema de direccionamiento IP estructurado bajo el rango \texttt{192.168.X.0/24}, asegurando la correcta identificación de cada red.
+    \item Configurar dispositivos de red Cisco, aplicando segmentación mediante VLANs y enrutamiento inter-VLAN.
+    \item Documentar los procedimientos de reseteo y configuración de los equipos de red, garantizando reproducibilidad y claridad técnica.
+    \item Seleccionar y utilizar herramientas de Kali Linux para realizar actividades de monitoreo de red, ataques de denegación de servicio, ataques a redes inalámbricas y una actividad adicional de carácter abierto.
+    \item Analizar los resultados obtenidos en cada actividad, identificando riesgos y proponiendo medidas de mitigación.
+\end{itemize}
+
+\subsection{Alcance del documento}
+
+El presente documento abarca el diseño de la red, la configuración de los dispositivos involucrados, la simulación de la topología mediante Packet Tracer y la ejecución de actividades de seguridad ofensiva en un entorno controlado. Todas las pruebas realizadas tienen un enfoque estrictamente académico y educativo, sin intención de ser aplicadas en entornos productivos o sin la debida autorización.
+
+La documentación desarrollada busca servir como una guía estructurada que evidencie el proceso completo seguido por el Grupo 6, desde la planificación inicial hasta el análisis final de los resultados, contribuyendo al fortalecimiento del aprendizaje práctico en el área de redes y seguridad informática.

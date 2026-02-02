@@ -1,0 +1,53 @@
+\section{Entorno y dispositivos físicos y programas utilizados}
+
+El desarrollo del presente proyecto se llevó a cabo en un entorno controlado, diseñado específicamente para la implementación, configuración y análisis de una infraestructura de red segmentada, así como para la ejecución de pruebas de seguridad informática con fines académicos. Dicho entorno integra tanto componentes físicos como herramientas de software especializadas, permitiendo simular escenarios reales de red y evaluar su comportamiento frente a diferentes tipos de ataques.
+
+La correcta selección de los dispositivos y programas utilizados resulta fundamental para garantizar la validez de los resultados obtenidos, así como para asegurar que las prácticas realizadas se alineen con los objetivos formativos de la asignatura.
+
+\subsection{Sistema operativo Kali Linux}
+
+Kali Linux es una distribución de GNU/Linux orientada a la seguridad informática, ampliamente utilizada en auditorías de seguridad, pruebas de penetración y análisis forense digital. En el presente proyecto, Kali Linux fue empleado como plataforma principal para la ejecución de herramientas de monitoreo y ataque, debido a su amplia colección de utilidades especializadas preinstaladas.
+
+Este sistema operativo se utilizó para realizar actividades como el análisis del tráfico de red, la ejecución de ataques de denegación de servicio, la evaluación de la seguridad de redes inalámbricas y la implementación de una actividad adicional de carácter abierto. Su flexibilidad y compatibilidad con hardware especializado, como antenas inalámbricas externas, lo convierten en una herramienta idónea para entornos académicos de aprendizaje en seguridad ofensiva.
+
+\subsection{Windows Server}
+
+Windows Server fue implementado como equipo servidor dentro de una red independiente, cumpliendo el rol de sistema centralizado para la provisión de servicios y la simulación de un entorno corporativo. La inclusión de este sistema operativo permite analizar el comportamiento de un servidor frente a distintos tipos de tráfico y ataques, así como evaluar los riesgos asociados a una configuración inadecuada de los servicios de red.
+
+El servidor se integró dentro de su propia VLAN, lo que permitió aislarlo lógicamente del resto de los dispositivos, reforzando el concepto de segmentación de red y facilitando el análisis de la comunicación inter-VLAN mediante el router configurado como puerta de enlace.
+
+\subsection{Antena inalámbrica Atheros}
+
+Para las pruebas relacionadas con redes inalámbricas, se utilizó una antena WiFi basada en el chipset \textbf{Atheros}, reconocido por su compatibilidad con el modo monitor y la inyección de paquetes. Estas características resultan esenciales para la ejecución de auditorías de seguridad sobre redes WiFi, ya que permiten capturar tráfico inalámbrico y evaluar la robustez de los mecanismos de autenticación y cifrado implementados.
+
+La antena fue utilizada en conjunto con Kali Linux para realizar actividades de análisis y ataque controlado a redes inalámbricas, específicamente aquellas relacionadas con la obtención de credenciales, siempre dentro de un entorno autorizado y con fines educativos.
+
+\subsection{Cisco Router}
+
+El router Cisco constituye el elemento central de interconexión entre las diferentes redes lógicas diseñadas en la práctica. Este dispositivo fue configurado para manejar múltiples subinterfaces, cada una asociada a una VLAN específica, utilizando el protocolo de encapsulación \textbf{IEEE 802.1Q}. De esta manera, el router cumple la función de enrutamiento inter-VLAN, permitiendo la comunicación controlada entre los distintos segmentos de red.
+
+Adicionalmente, el router fue configurado para proporcionar servicios de \textbf{DHCP}, asignando dinámicamente direcciones IP a los equipos conectados en cada red, así como para implementar parámetros básicos de seguridad, tales como contraseñas de acceso y cifrado de credenciales.
+
+\subsection{Cisco Switch}
+
+El switch Cisco fue utilizado como dispositivo de capa 2, encargado de la segmentación lógica de la red mediante la creación y administración de múltiples VLANs. Cada puerto del switch fue configurado en modo acceso o troncal, según su función dentro de la topología, permitiendo conectar equipos finales y establecer enlaces con el router para el transporte de tráfico etiquetado.
+
+La configuración del switch resulta fundamental para garantizar el aislamiento entre redes, mejorar el rendimiento y reducir la propagación de posibles ataques, ya que limita el dominio de broadcast y controla el flujo de información dentro de la infraestructura.
+
+\subsection{Cisco Access Point}
+
+El Access Point Cisco fue integrado a la red con el propósito de proporcionar conectividad inalámbrica a los dispositivos autorizados. Este equipo forma parte de la red que incluye el sistema Kali Linux, permitiendo la realización de pruebas de seguridad sobre redes WiFi en un entorno controlado.
+
+La inclusión del Access Point facilita la simulación de escenarios reales en los que los atacantes intentan comprometer redes inalámbricas, permitiendo evaluar la efectividad de los mecanismos de autenticación y cifrado implementados, así como analizar posibles vulnerabilidades.
+
+\subsection{Tera Term}
+
+Tera Term es una herramienta de emulación de terminal utilizada para la administración y configuración de dispositivos de red mediante conexiones seriales y remotas. En el presente proyecto, Tera Term fue empleado para acceder a la consola del router y del switch Cisco, permitiendo realizar tareas de configuración inicial, reseteo de equipos y verificación de parámetros de funcionamiento.
+
+El uso de esta herramienta garantiza un control preciso sobre los dispositivos de red y facilita la documentación detallada de los comandos ejecutados, contribuyendo a la reproducibilidad y claridad técnica del proyecto.
+
+\subsection{Herramientas de simulación y apoyo}
+
+Como complemento a los dispositivos físicos y sistemas operativos utilizados, se empleó la herramienta \textbf{Cisco Packet Tracer} para el diseño y simulación de la topología de red. Esta herramienta permitió representar gráficamente la infraestructura propuesta, validar la conectividad entre redes y verificar el correcto funcionamiento del enrutamiento inter-VLAN antes de su implementación definitiva.
+
+El uso de herramientas de simulación constituye una práctica esencial en el ámbito académico, ya que permite analizar escenarios complejos de manera segura, reduciendo riesgos y facilitando la comprensión de los conceptos teóricos aplicados en la práctica.

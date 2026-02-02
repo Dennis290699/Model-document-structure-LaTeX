@@ -1,0 +1,65 @@
+\section{Reset de equipos de red}
+
+Antes de proceder con la configuración de la infraestructura de red diseñada, fue necesario realizar el proceso de restauración de los dispositivos de red a su estado inicial de fábrica. Este procedimiento garantiza un entorno limpio, libre de configuraciones previas que puedan interferir con el correcto funcionamiento de la red o afectar los resultados de las pruebas de seguridad realizadas.
+
+El reseteo de los equipos permite asegurar que todas las configuraciones aplicadas durante la práctica sean controladas, documentadas y reproducibles, lo cual constituye una buena práctica fundamental en la administración de redes y en auditorías de seguridad informática.
+
+\subsection{Reset del Router}
+
+El router Cisco fue restaurado a su configuración inicial con el objetivo de eliminar cualquier parámetro previamente almacenado, incluyendo configuraciones de interfaces, rutas, contraseñas y servicios. Para este propósito, se utilizó el procedimiento estándar que permite ignorar el archivo de configuración almacenado en la memoria NVRAM durante el arranque del dispositivo.
+
+Este proceso se realiza mediante la modificación temporal del registro de configuración del router, permitiendo acceder al sistema sin cargar la configuración existente.
+
+\subsubsection{Procedimiento de reseteo}
+
+A continuación, se detallan los comandos ejecutados durante el proceso de reseteo del router:
+
+\begin{lstlisting}[caption={Comandos utilizados para el reset del Router Cisco}]
+confreg 0x2142
+reset
+no
+enable
+config t
+config-register 0x2102
+end
+copy running-config startup-config
+reload
+no
+\end{lstlisting}
+
+\subsubsection{Descripción del procedimiento}
+
+El comando \texttt{confreg 0x2142} modifica el registro de configuración del router para que ignore el archivo \texttt{startup-config} durante el arranque. Posteriormente, el comando \texttt{reset} reinicia el dispositivo, permitiendo el acceso al modo privilegiado sin aplicar configuraciones previas.
+
+Una vez iniciado el router, se accede al modo de configuración global para restaurar el registro de configuración original mediante el comando \texttt{config-register 0x2102}, asegurando que en futuros reinicios el router cargue correctamente la configuración almacenada. Finalmente, se guarda la configuración limpia en la memoria NVRAM y se reinicia el dispositivo para aplicar los cambios de forma permanente.
+
+\subsection{Reset del Switch}
+
+El reseteo del switch Cisco se realizó con el objetivo de eliminar configuraciones anteriores relacionadas con VLANs, puertos, contraseñas y otros parámetros administrativos. Este procedimiento es especialmente importante en dispositivos de capa 2, ya que las VLANs se almacenan en un archivo independiente (\texttt{vlan.dat}), el cual debe ser eliminado manualmente.
+
+\subsubsection{Procedimiento de reseteo}
+
+A continuación, se presentan los comandos utilizados para restaurar el switch a su estado inicial:
+
+\begin{lstlisting}[caption={Comandos utilizados para el reset del Switch Cisco}]
+enable
+show flash
+delete vlan.dat
+--confirm
+erase startup-config
+reload
+--no
+--no
+\end{lstlisting}
+
+\subsubsection{Descripción del procedimiento}
+
+El proceso inicia accediendo al modo privilegiado del switch mediante el comando \texttt{enable}. A continuación, se verifica el contenido de la memoria flash para confirmar la existencia del archivo \texttt{vlan.dat}, el cual almacena la información de las VLANs configuradas previamente.
+
+El comando \texttt{delete vlan.dat} elimina dicho archivo, asegurando que no existan VLANs residuales que puedan afectar la segmentación de la red. Posteriormente, el comando \texttt{erase startup-config} borra la configuración de inicio almacenada en la NVRAM. Finalmente, el switch es reiniciado mediante el comando \texttt{reload}, descartando cualquier solicitud de guardar configuraciones, lo que permite iniciar el dispositivo con una configuración completamente limpia.
+
+\subsection{Importancia del reseteo en el proyecto}
+
+El reseteo de los dispositivos de red constituye una etapa crítica dentro del desarrollo del proyecto, ya que garantiza que todas las configuraciones aplicadas posteriormente respondan exclusivamente a los requerimientos del diseño propuesto por el Grupo 6. Además, este procedimiento facilita la identificación de errores, mejora la trazabilidad de los cambios realizados y asegura que los resultados obtenidos durante las pruebas de seguridad sean confiables y reproducibles.
+
+La correcta ejecución de estos procesos sienta las bases para una configuración ordenada de la red y para la realización de las actividades de monitoreo y ataque documentadas en los capítulos siguientes.
