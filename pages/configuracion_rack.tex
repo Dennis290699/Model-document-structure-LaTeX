@@ -169,6 +169,92 @@ El Access Point fue integrado a la red como parte de la VLAN destinada a Kali Li
 
 El Access Point fue configurado para operar dentro del segmento correspondiente, obteniendo su dirección IP de forma dinámica mediante DHCP y permitiendo la asociación de dispositivos autorizados para las pruebas académicas.
 
+\subsubsection{Configuración lógica y de seguridad del Access Point}
+
+El Access Point Cisco modelo \textbf{WAP4410N} fue configurado mediante la carga de un archivo de configuración, lo cual permitió establecer de manera consistente los parámetros de red, seguridad inalámbrica y administración del dispositivo. Este enfoque garantiza reproducibilidad y reduce errores derivados de configuraciones manuales.
+
+La configuración aplicada responde a los requerimientos del entorno académico planteado, integrando el Access Point dentro de la infraestructura VLAN previamente definida y habilitando una red inalámbrica segura para la ejecución de pruebas controladas.
+
+\paragraph{Configuración de red y direccionamiento}
+
+El Access Point fue configurado para obtener su direccionamiento IP de forma automática mediante DHCP, permitiendo su integración directa con el router configurado previamente como servidor de direcciones.
+
+\begin{lstlisting}[caption={Configuración básica de red del Access Point}]
+[BASIC]
+Host_Name=wap1627c4
+Device_Name=WAP4410N
+IP_settings=1
+IPv6=0
+\end{lstlisting}
+
+Esta configuración permite una administración flexible del dispositivo, evitando conflictos de direccionamiento y facilitando su despliegue dentro del rack de comunicaciones.
+
+\paragraph{Configuración inalámbrica básica}
+
+El Access Point fue configurado para operar en modo mixto \textit{802.11 b/g/n}, asegurando compatibilidad con distintos dispositivos cliente. Se definió un único SSID activo correspondiente al grupo de trabajo.
+
+\begin{lstlisting}[caption={Configuración inalámbrica básica}]
+[Wireless_Basic]
+Network_mode=7
+Channel=6
+SSID1=GRUPO6
+SSID1_broadcast=1
+\end{lstlisting}
+
+El uso de un canal fijo permite controlar interferencias durante las pruebas de auditoría WiFi, facilitando la captura de tráfico y el análisis posterior.
+
+\paragraph{Configuración de seguridad inalámbrica}
+
+Para garantizar la protección de la red inalámbrica, se implementó el estándar \textbf{WPA2-Personal} con cifrado \textbf{AES}, considerado una buena práctica en entornos modernos. La autenticación se realiza mediante una clave precompartida (PSK).
+
+\begin{lstlisting}[caption={Configuración de seguridad inalámbrica WPA2}]
+[Wireless_security_1]
+security_mode=3
+authentication_type=1
+encryption=2
+PSK_key=grupo6_cripto
+Key_renew=3600
+\end{lstlisting}
+
+Esta configuración permite evaluar la robustez de la contraseña durante los ataques documentados en capítulos posteriores, manteniendo un equilibrio entre seguridad y viabilidad de pruebas académicas.
+
+\paragraph{Aislamiento y control de acceso}
+
+Se habilitó el aislamiento entre SSID y se mantuvo deshabilitado el control de acceso por direcciones MAC, con el objetivo de no interferir en las pruebas de auditoría y permitir la asociación controlada de los dispositivos del laboratorio.
+
+\begin{lstlisting}[caption={Parámetros de aislamiento y control de acceso}]
+isolation_between_SSID=1
+isolation_within_SSID=0
+Connection_Control=0
+\end{lstlisting}
+
+\paragraph{Parámetros avanzados y operación del dispositivo}
+
+El Access Point fue configurado para operar exclusivamente en modo \textit{Access Point}, descartando funcionalidades adicionales como WDS o modo monitor, ya que la captura de tráfico se realizó mediante una antena externa dedicada.
+
+\begin{lstlisting}[caption={Modo de operación del Access Point}]
+[AP_Mode]
+AP_mode=0
+\end{lstlisting}
+
+Asimismo, se establecieron parámetros avanzados de transmisión, como ancho de canal de 20 MHz y valores estándar de \textit{beacon} y \textit{DTIM}, garantizando estabilidad y rendimiento durante las pruebas.
+
+\paragraph{Configuración administrativa}
+
+Finalmente, se configuraron las credenciales administrativas básicas del dispositivo, restringiendo el acceso a personal autorizado del grupo de trabajo.
+
+\begin{lstlisting}[caption={Configuración administrativa del Access Point}]
+[Management]
+username=admin
+AP_password=admin
+HTTPS_Access=0
+Secure_Shell=0
+\end{lstlisting}
+
+\paragraph{Relación con las pruebas de seguridad}
+
+La configuración del Access Point constituye un elemento clave para el desarrollo del tercer ataque documentado en este trabajo, ya que define el entorno inalámbrico objetivo sobre el cual se realizaron las pruebas de auditoría WiFi, captura de handshakes y análisis de seguridad de la clave precompartida.
+
 \subsection{Importancia de la configuración del rack}
 
 La correcta configuración del rack garantiza el funcionamiento adecuado de la infraestructura de red y permite la ejecución efectiva de las actividades de seguridad planteadas en el proyecto. La segmentación mediante VLANs, el enrutamiento inter-VLAN y la asignación dinámica de direcciones IP constituyen elementos clave para simular un entorno realista y seguro.

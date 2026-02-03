@@ -1,7 +1,72 @@
 \section{Primer ataque: Escaneo y ataque de puertos}
 
 \subsection{Objetivo del ataque}
+
+El objetivo principal de este primer ataque es realizar un proceso de reconocimiento sobre una máquina objetivo dentro de la red, con la finalidad de identificar los puertos que se encuentran abiertos y los servicios que se están ejecutando sobre ellos.
+
+Este tipo de ataque constituye una fase inicial en un escenario real de intrusión, ya que permite al atacante determinar posibles vectores de acceso, como puertos comúnmente utilizados por servicios web, administración remota o aplicaciones personalizadas (por ejemplo, el puerto 8080).
+
 \subsection{Herramientas utilizadas}
+
+Para la ejecución de este ataque se emplearon las siguientes herramientas:
+
+\begin{itemize}
+    \item \textbf{Nmap}: herramienta principal de escaneo de puertos, utilizada para identificar puertos abiertos y servicios activos en el host objetivo.
+    \item \textbf{Hping3}: utilizada de forma complementaria para generar tráfico TCP y observar el comportamiento del puerto objetivo frente a múltiples solicitudes.
+    \item \textbf{Windows PowerShell}: empleada en la máquina víctima para monitorear las conexiones TCP entrantes y analizar el estado de las mismas.
+\end{itemize}
+
 \subsection{Procedimiento}
+
+El procedimiento del ataque se desarrolló en varias fases, iniciando con un escaneo pasivo y finalizando con una prueba activa de tráfico hacia un puerto específico.
+
+\paragraph{Escaneo de puertos con Nmap}
+
+En primera instancia se realizó un escaneo de puertos utilizando la herramienta \textit{Nmap}, cuyo propósito fue identificar los puertos abiertos en la máquina objetivo y determinar cuáles podrían ser utilizados como punto de entrada.
+
+El funcionamiento esperado de esta herramienta consiste en enviar paquetes de sondeo a los distintos puertos del host objetivo y analizar las respuestas recibidas. En caso de que un puerto se encuentre abierto, Nmap devuelve una respuesta positiva, permitiendo identificar posibles servicios expuestos.
+
+\paragraph{Generación de tráfico TCP hacia el puerto objetivo}
+
+Una vez identificado un puerto activo (en este caso, el puerto 443 como ejemplo), se procedió a generar tráfico TCP de tipo SYN utilizando la herramienta \textit{hping3}, simulando un ataque de saturación ligera para observar el comportamiento del sistema.
+
+\begin{lstlisting}[caption={Generación de tráfico SYN hacia el puerto 443}]
+sudo hping3 -S -p 443 --flood 192.168.0.183
+\end{lstlisting}
+
+\paragraph{Monitoreo de conexiones en la máquina víctima}
+
+De manera paralela, en la máquina objetivo con sistema operativo Windows, se monitorearon las conexiones TCP entrantes utilizando comandos de PowerShell, con el fin de identificar conexiones en estado \texttt{SYN\_RECEIVED}.
+
+\begin{lstlisting}[caption={Monitoreo de conexiones TCP en Windows}]
+Get-NetTCPConnection | Where-Object {$_.LocalPort -eq 443 -and $_.State -eq "SynReceived"}
+\end{lstlisting}
+
+Adicionalmente, se realizó un conteo de las conexiones detectadas para medir el impacto del tráfico generado.
+
+\begin{lstlisting}[caption={Conteo de conexiones SYN\_RECEIVED}]
+Get-NetTCPConnection | Where-Object {$_.LocalPort -eq 443 -and $_.State -eq "SynReceived"} | Measure-Object
+\end{lstlisting}
+
 \subsection{Resultados obtenidos}
+
+Como resultado del escaneo inicial, se identificaron varios puertos abiertos en la máquina objetivo, confirmando la presencia de servicios activos accesibles desde la red.
+
+Durante la ejecución del envío masivo de paquetes SYN, se observó un incremento significativo de conexiones en estado \texttt{SYN\_RECEIVED} en el sistema Windows, lo que evidencia que el puerto objetivo estaba recibiendo múltiples solicitudes simultáneas sin completar el establecimiento de la conexión TCP.
+
+Este comportamiento confirma que el puerto se encuentra activo y expuesto, además de mostrar cómo un volumen elevado de solicitudes puede afectar el rendimiento del servicio.
+
 \subsection{Análisis y mitigación}
+
+El escaneo de puertos demuestra la importancia de restringir los servicios expuestos innecesariamente en una red. Puertos abiertos sin la debida protección representan un riesgo significativo, ya que facilitan la fase de reconocimiento de un atacante.
+
+Como medidas de mitigación se recomiendan las siguientes acciones:
+
+\begin{itemize}
+    \item Implementar reglas de firewall que limiten el acceso a puertos específicos únicamente a direcciones IP autorizadas.
+    \item Deshabilitar servicios que no sean estrictamente necesarios.
+    \item Utilizar sistemas de detección y prevención de intrusiones (IDS/IPS) para identificar patrones de escaneo y ataques de tipo SYN Flood.
+    \item Configurar mecanismos de protección contra ataques de denegación de servicio a nivel de red y sistema operativo.
+\end{itemize}
+
+Este primer ataque sienta las bases para los ataques posteriores documentados en este trabajo, ya que proporciona información clave sobre la superficie de ataque disponible en la infraestructura analizada.

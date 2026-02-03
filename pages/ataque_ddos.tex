@@ -1,7 +1,72 @@
-\section{Segundo ataque: Denegación de servicio (DDoS)}
+\section{Segundo ataque: Denegación de Servicio (DDoS)}
 
 \subsection{Objetivo del ataque}
+
+El objetivo de este segundo ataque es evaluar la capacidad de respuesta y disponibilidad de un servidor ante un alto volumen de solicitudes simultáneas, simulando un ataque de Denegación de Servicio (DDoS).
+
+Este tipo de ataque busca saturar los recursos del sistema objetivo, impidiendo que usuarios legítimos puedan acceder al servicio ofrecido. En este caso, el servicio analizado corresponde a una página web alojada en un servidor con sistema operativo Windows Server, configurada para operar sobre el puerto 8080, el cual se encuentra abierto para fines de prueba.
+
+\subsection{Entorno del ataque}
+
+El entorno utilizado para la ejecución del ataque está compuesto por los siguientes elementos:
+
+\begin{itemize}
+    \item \textbf{Servidor objetivo}: Windows Server con un servicio web activo y accesible a través del puerto 8080.
+    \item \textbf{Máquina atacante}: Kali Linux, desde donde se genera el tráfico malicioso.
+    \item \textbf{Red de pruebas}: Red interna previamente configurada mediante router y switch, permitiendo la comunicación directa entre el atacante y el servidor.
+\end{itemize}
+
+Este entorno permite simular un escenario realista de ataque dentro de una infraestructura controlada.
+
 \subsection{Herramientas utilizadas}
+
+Para la ejecución del ataque de denegación de servicio se emplearon las siguientes herramientas:
+
+\begin{itemize}
+    \item \textbf{Hping3}: herramienta utilizada para generar grandes volúmenes de paquetes TCP dirigidos al puerto del servicio web.
+    \item \textbf{Windows PowerShell}: empleada para monitorear el estado de las conexiones y el impacto del ataque en el servidor.
+\end{itemize}
+
 \subsection{Procedimiento}
+
+El procedimiento del ataque se llevó a cabo en varias etapas, iniciando con la verificación del servicio y finalizando con la saturación del puerto objetivo.
+
+\paragraph{Verificación del servicio web}
+
+Antes de ejecutar el ataque, se verificó que el servicio web estuviera operativo y accesible desde la red, confirmando que la página cargaba correctamente a través del puerto 8080 del servidor.
+
+\paragraph{Ejecución del ataque DDoS}
+
+Una vez validado el funcionamiento del servicio, desde la máquina Kali Linux se procedió a ejecutar un ataque de saturación mediante el envío masivo de paquetes TCP SYN hacia el puerto 8080 del servidor.
+
+\begin{lstlisting}[caption={Ejecución del ataque DDoS hacia el puerto 8080}]
+sudo hping3 -S -p 8080 --flood --rand-source 192.168.0.183
+\end{lstlisting}
+
+El uso de direcciones IP de origen aleatorias permite simular un ataque distribuido, dificultando la identificación de una única fuente de tráfico.
+
+\paragraph{Monitoreo del impacto en el servidor}
+
+Durante la ejecución del ataque, se monitoreó el comportamiento del servidor utilizando herramientas propias del sistema operativo Windows Server, observando el incremento de conexiones entrantes y el consumo de recursos del sistema.
+
 \subsection{Resultados obtenidos}
+
+Como resultado del ataque, se evidenció un incremento significativo en el número de solicitudes recibidas por el servidor, lo cual provocó una notable ralentización en la carga de la página web.
+
+En determinados momentos, el servicio dejó de responder de manera adecuada, dificultando o impidiendo el acceso a la página desde otros equipos de la red. Este comportamiento confirma que la saturación de paquetes logró afectar la disponibilidad del servicio, cumpliendo con el objetivo del ataque.
+
 \subsection{Análisis y mitigación}
+
+El ataque de denegación de servicio demuestra la vulnerabilidad de los servicios expuestos cuando no cuentan con mecanismos adecuados de protección frente a tráfico malicioso.
+
+Para mitigar este tipo de ataques se recomienda:
+
+\begin{itemize}
+    \item Implementar sistemas de detección y prevención de ataques DDoS.
+    \item Configurar límites de conexiones simultáneas en el servidor web.
+    \item Utilizar firewalls con reglas específicas para filtrar tráfico sospechoso.
+    \item Emplear balanceadores de carga que distribuyan las solicitudes entre múltiples servidores.
+    \item Restringir el acceso a servicios de prueba, como el puerto 8080, únicamente a redes o direcciones IP autorizadas.
+\end{itemize}
+
+El análisis de este segundo ataque resalta la importancia de proteger la disponibilidad de los servicios, especialmente aquellos accesibles desde la red, ya que su indisponibilidad puede generar impactos críticos en entornos productivos.

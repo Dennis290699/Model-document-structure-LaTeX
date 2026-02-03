@@ -1,7 +1,111 @@
 \section{Tercer ataque: Ataque por red WiFi}
 
 \subsection{Objetivo del ataque}
+
+El objetivo de este tercer ataque es evaluar la seguridad de una red inalámbrica mediante la explotación de debilidades en el proceso de autenticación Wi-Fi.  
+La meta principal consiste en obtener el \textit{handshake} de autenticación WPA/WPA2 y, posteriormente, intentar descifrar la clave de acceso utilizando un ataque de diccionario.
+
+Este tipo de ataque permite comprobar si una red inalámbrica utiliza contraseñas débiles o configuraciones inseguras que puedan ser explotadas por un atacante.
+
+\subsection{Entorno del ataque}
+
+El ataque se desarrolló en un entorno controlado compuesto por los siguientes elementos:
+
+\begin{itemize}
+    \item \textbf{Máquina atacante}: Kali Linux, utilizada para la auditoría inalámbrica.
+    \item \textbf{Dispositivo objetivo}: Punto de acceso inalámbrico (Access Point) configurado dentro del laboratorio.
+    \item \textbf{Antena Wi-Fi}: Antena compatible con modo monitor (Atheros).
+    \item \textbf{Red inalámbrica}: Red protegida con cifrado WPA/WPA2.
+\end{itemize}
+
+Este entorno permitió simular un escenario realista de ataque sobre una red Wi-Fi privada.
+
 \subsection{Herramientas utilizadas}
+
+Para la ejecución del ataque se utilizaron las siguientes herramientas incluidas en Kali Linux:
+
+\begin{itemize}
+    \item \textbf{airmon-ng}: para habilitar el modo monitor en la interfaz inalámbrica.
+    \item \textbf{airodump-ng}: para escanear redes y capturar paquetes.
+    \item \textbf{aireplay-ng}: para ejecutar ataques de desautenticación.
+    \item \textbf{aircrack-ng}: para realizar el ataque de diccionario sobre el archivo capturado.
+\end{itemize}
+
 \subsection{Procedimiento}
+
+El procedimiento del ataque se llevó a cabo siguiendo una secuencia estructurada de pasos.
+
+\paragraph{Identificación de la interfaz inalámbrica}
+
+Inicialmente, se identificó la interfaz Wi-Fi disponible en el sistema utilizando el comando:
+
+\begin{lstlisting}[caption={Identificación de la interfaz inalámbrica}]
+ifconfig
+\end{lstlisting}
+
+Este paso permitió confirmar el estado de la antena y el nombre de la interfaz a utilizar.
+
+\paragraph{Activación del modo monitor}
+
+Posteriormente, se habilitó el modo monitor, necesario para capturar tráfico inalámbrico sin estar conectado a la red:
+
+\begin{lstlisting}[caption={Activación del modo monitor}]
+sudo airmon-ng start wlan0
+\end{lstlisting}
+
+Como resultado, se generó una nueva interfaz en modo monitor.
+
+\paragraph{Escaneo de redes Wi-Fi}
+
+Con la interfaz en modo monitor, se procedió a escanear las redes disponibles para identificar el punto de acceso objetivo, su canal y su tipo de cifrado:
+
+\begin{lstlisting}[caption={Escaneo de redes inalámbricas}]
+sudo airodump-ng wlan0mon
+\end{lstlisting}
+
+\paragraph{Captura del handshake}
+
+Una vez identificada la red objetivo, se inició la captura específica de paquetes asociados a dicha red:
+
+\begin{lstlisting}[caption={Captura de tráfico de la red objetivo}]
+sudo airodump-ng --c [canal] --bssid [BSSID] -w captura wlan0mon
+\end{lstlisting}
+
+Para forzar la generación del \textit{handshake}, se ejecutó un ataque de desautenticación contra un cliente conectado:
+
+\begin{lstlisting}[caption={Ataque de desautenticación}]
+sudo aireplay-ng -0 9 -a [BSSID] -c [estación] wlan0mon
+\end{lstlisting}
+
+Este procedimiento provocó la desconexión del cliente, quien al reconectarse generó el handshake necesario.
+
+\paragraph{Ataque de diccionario}
+
+Con el archivo de captura generado, se procedió a ejecutar un ataque de diccionario para intentar descifrar la contraseña de la red:
+
+\begin{lstlisting}[caption={Ataque de diccionario con aircrack-ng}]
+sudo aircrack-ng -b [BSSID] -w rockyou.txt captura-01.cap
+\end{lstlisting}
+
 \subsection{Resultados obtenidos}
+
+Como resultado del ataque, se logró capturar correctamente el \textit{handshake} de autenticación WPA/WPA2.  
+El análisis posterior mediante el ataque de diccionario permitió determinar si la clave de seguridad utilizada por la red era vulnerable o suficientemente robusta frente a ataques de fuerza bruta.
+
+En caso de utilizar contraseñas débiles o comunes, el acceso no autorizado a la red puede lograrse en un corto periodo de tiempo.
+
 \subsection{Análisis y mitigación}
+
+Este ataque demuestra que la seguridad de una red Wi-Fi depende en gran medida de la fortaleza de la contraseña utilizada y de la correcta configuración del punto de acceso.
+
+Para mitigar este tipo de ataques se recomienda:
+
+\begin{itemize}
+    \item Utilizar contraseñas largas y complejas.
+    \item Emplear cifrado WPA3 cuando sea posible.
+    \item Deshabilitar WPS en el punto de acceso.
+    \item Monitorear intentos de desautenticación frecuentes.
+    \item Implementar sistemas de detección de intrusiones inalámbricas.
+\end{itemize}
+
+El análisis de este tercer ataque evidencia cómo las debilidades en redes inalámbricas pueden ser explotadas si no se aplican buenas prácticas de seguridad.
